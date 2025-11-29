@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azzi Oyorisou</title>
+    <link rel="stylesheet" href="azzistyles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Whitney:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Intro sound - now enter.mp3 -->
+    <audio id="intro-sound" autoplay loop preload="auto">
+        <source src="enter.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Background video - fixed autoplay & visibility -->
+    <video autoplay muted loop playsinline id="bg-video" preload="auto">
+        <source src="backvid.mp4" type="video/mp4">
+        Your browser does not support video.
+    </video>
+
+    <!-- Welcome screen -->
+    <div id="welcome" class="welcome">
+        <div class="welcome-content">
+            <i class="fas fa-play"></i>
+            <h2>Click anywhere to enter</h2>
+        </div>
+    </div>
+
+    <!-- Volume slider -->
+    <div class="volume-container">
+        <i class="fas fa-volume-up"></i>
+        <input type="range" id="volume" min="0" max="100" value="30">
+    </div>
+
+    <!-- Main profile card -->
+    <div class="overlay">
+        <div class="profile-card">
+            <img src="pfp.jpg" alt="Azzi" class="avatar" onerror="this.src='pfp.png'">
+            
+            <div class="name-line">
+                <h1 class="username">Azzi Oyorisou</h1>
+            </div>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                <span class="status-text">Online</span>
+            </div>
+
+            <p class="bio">your epic bio here ⋅ grinding r6 ⋅ add me on discord</p>
+
+            <div class="links">
+                <a href="#" class="link-btn"><i class="fab fa-discord"></i></a>
+                <a href="#" class="link-btn"><i class="fab fa-twitch"></i></a>
+                <a href="#" class="link-btn"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="link-btn"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const intro = document.getElementById('intro-sound');
+        const video = document.getElementById('bg-video');
+        const welcome = document.getElementById('welcome');
+        const volumeSlider = document.getElementById('volume');
+
+        // Make sure video actually starts playing (some browsers are strict)
+        video.play().catch(() => {});
+
+        document.body.addEventListener('click', function enter() {
+            intro.pause();
+            intro.currentTime = 0;
+
+            video.muted = false;
+            video.currentTime = 0;
+            video.volume = volumeSlider.value / 100;
+            video.play();
+
+            welcome.classList.add('fade-out');
+            setTimeout(() => welcome.remove(), 600);
+            document.querySelector('.profile-card').classList.add('active');
+
+            document.body.removeEventListener('click', enter);
+        }, { once: true });
+
+        volumeSlider.addEventListener('input', (e) => {
+            video.volume = e.target.value / 100;
+        });
+    </script>
+</body>
+</html>

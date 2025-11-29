@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rules ♡ Femboy Universe</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0b0b14;
+      --glass: rgba(20, 20, 35, 0.65);
+      --glass-border: rgba(90, 70, 160, 0.3);
+      --accent: #c678dd;
+      --accent2: #e06c9f;
+      --pink: #ff6bc0;
+      --text: #e0d0ff;
+      --text-muted: #b8a8e0;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(198, 120, 221, 0.15) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(224, 108, 159, 0.15) 0%, transparent 20%);
+      overflow-x: hidden;
+    }
+
+    .bg-blob { position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.25; pointer-events: none; z-index: 1; }
+    .blob1 { width: 600px; height: 600px; background: var(--accent); top: -10%; left: -10%; animation: float 22s infinite ease-in-out; }
+    .blob2 { width: 800px; height: 800px; background: var(--accent2); bottom: -20%; right: -10%; animation: float 28s infinite ease-in-out reverse; }
+
+    @keyframes float { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(100px,-100px) rotate(12deg)} }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+    }
+
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 3.5rem 4.5rem;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+    h1 {
+      font-size: 4.8rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #c678dd, #e06c9f, #ff6bc0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      letter-spacing: -2px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      margin-bottom: 3rem;
+    }
+
+    ol {
+      padding-left: 1.8rem;
+      line-height: 1.8;
+      font-size: 1.15rem;
+    }
+
+    li {
+      margin-bottom: 1.4rem;
+      color: var(--text);
+    }
+
+    li strong {
+      color: var(--pink);
+    }
+
+    .note {
+      background: rgba(198, 120, 221, 0.1);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin: 2rem 0;
+      color: var(--text-muted);
+    }
+
+    a {
+      color: var(--pink);
+      text-decoration: underline;
+      transition: 0.3s;
+    }
+
+    a:hover { opacity: 0.8; }
+
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .heart {
+      color: var(--pink);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.4); } }
+
+    .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .star { position: absolute; background: white; border-radius: 50%; box-shadow: 0 0 12px #fff, 0 0 25px var(--accent); opacity: 0; animation: twinkle 6s infinite ease-in-out; }
+
+    @keyframes twinkle { 0%,100% { opacity: 0; transform: scale(0) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(180deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="stars" id="stars"></div>
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+
+  <div class="container">
+    <div class="card">
+      <h1>Femboy Universe</h1>
+      <p class="subtitle">Server Rules & Guidelines ♡</p>
+
+      <ol>
+        <li><strong>Be respectful</strong><br>You must respect all users, regardless of your liking towards them. Treat others the way you want to be treated.</li>
+
+        <li><strong>No inappropriate language</strong><br>Profanity should be kept to a minimum. Any derogatory language towards any user is strictly prohibited.</li>
+
+        <li><strong>No spamming</strong><br>Don’t flood chat with repeated small messages or disruptive content.</li>
+
+        <li><strong>No NSFW or adult material</strong><br>Pornographic, sexual, or otherwise adult content is not allowed anywhere in the server.</li>
+
+        <li><strong>No offensive names or profile pictures</strong><br>You will be asked to change them if staff deems them inappropriate.</li>
+
+        <li><strong>No server raiding or raid mentions</strong></li>
+
+        <li><strong>No direct or indirect threats</strong><br>Threats of DDoS, doxxing, death, abuse, or any malicious act are strictly prohibited.</li>
+
+        <li><strong>Follow Discord’s Community Guidelines</strong><br><a href="https://discord.com/guidelines" target="_blank">discord.com/guidelines</a></li>
+
+        <li><strong>Do NOT DM users in a creepy way</strong><br>Creepy/weird DMs will result in an instant ban if reported.</li>
+
+        <li><strong>Do NOT ping @everyone or @here</strong><br>Doing so will result in a mute, kick, or ban.</li>
+
+        <li><strong>No gore, self-harm, or violent content</strong><br>This includes images, art, emojis, or discussion of gore, self-harm, or violence of any kind.</li>
+
+        <li><strong>Follow Discord ToS</strong><br><a href="https://discord.com/terms" target="_blank">discord.com/terms</a></li>
+      </ol>
+
+      <div class="note">
+        <strong>Advertisements & Partnerships</strong><br>
+        Self-promo and random server ads are not allowed. Want to partner? Open a ticket and we’ll talk ♡
+      </div>
+
+      <p style="margin-top: 2.5rem; text-align: center;">
+        Staff reserve the right to mute, kick, or ban at their discretion.<br>
+        If you feel mistreated, DM an admin — we’ll sort it out fairly.
+      </p>
+
+      <footer>
+        made with <span class="heart">♡</span> for the cutest femboys in the universe
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 90; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      const size = Math.random() * 3.5 + 1;
+      star.style.width = star.style.height = `${size}px`;
+      star.style.left = `${Math.random()*100}%`;
+      star.style.top = `${Math.random()*100}%`;
+      star.style.animationDuration = `${Math.random()*7 + 5}s`;
+      star.style.animationDelay = `${Math.random()*7}s`;
+      starsContainer.appendChild(star);
+    }
+  </script>
+</body>
+</html>
