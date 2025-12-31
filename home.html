@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Femboy Universe</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0b0b14;
+      --glass: rgba(20, 20, 35, 0.6);
+      --glass-border: rgba(90, 70, 160, 0.3);
+      --accent: #c678dd;
+      --accent2: #e06c9f;
+      --text: #e0d0ff;
+      --text-muted: #9988cc;
+      --disabled: #44475a;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(198,120,221,0.15) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(224,108,159,0.15) 0%, transparent 20%);
+    }
+
+    .bg-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.15s ease-out; /* Faster visual response */
+    }
+    .blob1 { width: 600px; height: 600px; background: var(--accent); top: -10%; left: -10%; animation: float 22s infinite ease-in-out; }
+    .blob2 { width: 800px; height: 800px; background: var(--accent2); bottom: -20%; right: -10%; animation: float 28s infinite ease-in-out reverse; }
+    @keyframes float { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(100px,-100px) rotate(12deg)} }
+
+    .enter-screen {
+      position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center;
+      z-index: 1000; cursor: pointer; transition: opacity 1s ease; background-image: inherit;
+    }
+    .enter-screen.hidden { opacity: 0; pointer-events: none; }
+    .enter-card {
+      background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+      border-radius: 28px; padding: clamp(2rem,8vw,4rem); text-align: center; max-width: 90vw;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    .enter-title { font-size: clamp(3rem,10vw,5rem); font-weight: 800; background: linear-gradient(90deg,#c678dd,#e06c9f,#ff6bc0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .enter-subtitle { font-size: clamp(1rem,4vw,1.3rem); color: var(--text-muted); margin-top: 1rem; }
+
+    .container { position: relative; z-index: 2; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; transition: opacity 1.2s ease; }
+    .container.visible { opacity: 1; }
+
+    .card {
+      background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+      border-radius: 28px; padding: clamp(2.5rem,7vw,4rem) clamp(2rem,6vw,4rem); width: 100%; max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7); text-align: center;
+    }
+    h1 {
+      font-size: clamp(3.2rem, 9vw, 5rem);
+      font-weight: 800;
+      background: linear-gradient(90deg,#c678dd,#e06c9f,#ff6bc0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -2px;
+      line-height: 1.1;
+    }
+    .subtitle {
+      font-size: clamp(1.1rem, 4vw, 1.35rem);
+      color: var(--text-muted);
+      margin: 1.8rem 0 2.5rem;
+      font-weight: 300;
+    }
+    .buttons { display: flex; flex-direction: column; gap: 1.1rem; }
+    .btn {
+      padding: 1.1rem 1.8rem;
+      border-radius: 18px;
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .btn-discord { background: rgba(88,101,242,0.3); border: 1px solid rgba(88,101,242,0.5); color: white; }
+    .btn-vrchat { background: rgba(198,120,221,0.25); border: 1px solid var(--accent); color: var(--text); }
+    .btn-minecraft {
+      background: rgba(80,200,120,0.1);
+      border: 1px dashed var(--disabled);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-minecraft::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--text-muted);
+      transform: translateY(-50%) rotate(-5deg);
+      opacity: 0.6;
+    }
+    .btn:hover:not(.btn-minecraft) { transform: translateY(-8px) scale(1.04); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+    .btn i { margin-right: 12px; font-size: 1.4em; }
+    footer { margin-top: 2.5rem; font-size: 0.95rem; color: var(--text-muted); }
+    .heart { color: #ff6bc0; animation: pulse 1.8s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star { position: absolute; background: #fff; border-radius: 50%; box-shadow: 0 0 12px #fff, 0 0 25px var(--accent); opacity: 0; animation: twinkle 6s infinite ease-in-out; transition: transform 0.2s ease-out; }
+    @keyframes twinkle { 0%,100%{opacity:0;transform:scale(0) rotate(0deg)} 50%{opacity:1;transform:scale(1) rotate(180deg)} }
+
+    /* Now Playing */
+    .now-playing-card {
+      position: fixed;
+      top: calc(1rem + env(safe-area-inset-top));
+      right: 1rem;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 0.9rem 1.2rem;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.8s ease;
+      width: fit-content;
+      min-width: 180px;
+      max-width: calc(100vw - 2rem);
+      text-align: center;
+    }
+    .now-playing-card.visible { opacity: 1; transform: translateY(0); }
+    .np-label { font-size: 0.75rem; color: var(--text-muted); opacity: 0; transition: opacity 0.8s ease; margin-bottom: 0.4rem; }
+    .np-label.show { opacity: 0.7; }
+    .np-inner { opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.8s ease, max-height 0.8s ease; margin-bottom: 0.4rem; }
+    .np-inner.show { opacity: 1; max-height: 80px; }
+    .np-title { font-size: clamp(0.95rem,3vw,1.1rem); font-weight: 600; color: var(--text); }
+    .np-artist { font-size: clamp(0.85rem,2.8vw,0.95rem); font-style: italic; color: var(--accent2); opacity: 0.9; }
+    .volume-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      max-width: 180px;
+      height: 5px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+      outline: none;
+    }
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--accent2);
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(224,108,159,0.6);
+    }
+
+    /* Logo Animation – 3s total */
+    .logo-container {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .logo-container.active { display: flex; }
+    .logo {
+      width: 200px;
+      height: 200px;
+      opacity: 0;
+      transform: translate(-50vw, 50vh) rotate(0deg) scale(0.5);
+      animation: logoSpin 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      border-radius: 25px;
+    }
+    @keyframes logoSpin {
+      0%   { opacity: 1; transform: translate(-50vw, 50vh) rotate(0deg) scale(0.5); }
+      48%  { opacity: 1; transform: translate(0, 0) rotate(360deg) scale(1); }
+      60%  { opacity: 1; transform: translate(0, 0) rotate(380deg) scale(0.4); }
+      100% { opacity: 0; transform: translate(0, 0) rotate(450deg) scale(6); }
+    }
+
+    @media (max-width: 768px) {
+      .logo {
+        animation: mobileLogo 3s ease-in-out forwards;
+        border-radius: 8px;
+      }
+      @keyframes mobileLogo {
+        0%   { opacity: 0; transform: scale(0.8); }
+        20%, 80% { opacity: 1; transform: scale(1); }
+        100% { opacity: 0; transform: scale(1.1); }
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="enter-screen" class="enter-screen">
+    <div class="enter-card">
+      <div class="enter-title">Femboy Universe</div>
+      <div class="enter-subtitle">Click anywhere to enter</div>
+    </div>
+  </div>
+
+  <div class="stars" id="stars"></div>
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+
+  <div class="container" id="main-container">
+    <div class="card">
+      <h1>Femboy Universe</h1>
+      <p class="subtitle">discord × vrchat × minecraft <sup style="font-size:0.55em;vertical-align:super;color:#ff6bc0;opacity:0.85;">soon™</sup></p>
+      <div class="buttons">
+        <a href="https://discord.gg/SVkaXxNvhZ" class="btn btn-discord" target="_blank"><i class="fab fa-discord"></i> Join Discord Server</a>
+        <a href="https://vrchat.com/home/group/grp_68d01405-7cf7-4151-97c3-f764755a4dcc" class="btn btn-vrchat" target="_blank"><i class="fas fa-vr-cardboard"></i> Join VRChat Group</a>
+        <a class="btn btn-minecraft"><i class="fas fa-cube"></i> Minecraft Server <small>(coming soon!)</small></a>
+      </div>
+      <footer>made with <span class="heart">❤️</span> for the cutest femboys in the universe</footer>
+    </div>
+  </div>
+
+  <div id="now-playing" class="now-playing-card">
+    <div class="np-label" id="volume-label">volume</div>
+    <div id="np-inner" class="np-inner">
+      <div class="np-title" id="np-title">Loading...</div>
+      <div class="np-artist" id="np-artist">Unknown</div>
+    </div>
+    <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+  </div>
+
+  <div id="logo-container" class="logo-container">
+    <img src="icon.png" alt="Logo" class="logo">
+  </div>
+
+  <audio id="bgm" loop preload="auto"></audio>
+
+  <script>
+    // Create stars with depth for parallax
+    const starsContainer = document.getElementById('stars');
+    const starCount = 120;
+
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+
+      const size = Math.random() * 3.5 + 0.8;
+      star.style.width = star.style.height = `${size}px`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 10}s`;
+
+      const depth = Math.random() < 0.1 ? 40 : Math.random() < 0.3 ? 25 : 12;
+      star.dataset.depth = depth;
+
+      starsContainer.appendChild(star);
+    }
+
+    // Parallax
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+
+      document.querySelectorAll('.star').forEach(star => {
+        const depth = parseFloat(star.dataset.depth) || 10;
+        const moveX = x * depth;
+        const moveY = y * depth;
+        star.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+    });
+
+    // Music setup
+    const tracks = [
+      { file: "main1.mp3", title: "Valentines Menu", artist: "Niko Patty" },
+      { file: "main2.mp3", title: "Nana", artist: "Polo & Pan" },
+      { file: "main-tadc.wav", title: "TADC Main Theme", artist: "GooseWorx" }
+    ];
+
+    // Shuffle and pick random track
+    const shuffled = [...tracks].sort(() => 0.5 - Math.random());
+    const currentTrack = shuffled[0];
+
+    const audio = document.getElementById('bgm');
+    audio.src = currentTrack.file;
+
+    const npTitle = document.getElementById('np-title');
+    const npArtist = document.getElementById('np-artist');
+    npTitle.textContent = currentTrack.title;
+    npArtist.textContent = currentTrack.artist;
+
+    // Elements
+    const enterScreen = document.getElementById('enter-screen');
+    const mainContainer = document.getElementById('main-container');
+    const nowPlaying = document.getElementById('now-playing');
+    const npInner = document.getElementById('np-inner');
+    const volumeLabel = document.getElementById('volume-label');
+    const volume = document.getElementById('volume-slider');
+    const logoContainer = document.getElementById('logo-container');
+
+    // Audio visualization setup – more responsive + stronger bass reaction
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(audio);
+    const analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 512; // Higher resolution for better bass detection
+    analyser.smoothingTimeConstant = 0.75; // Slightly less smoothing for snappier response
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const blob1 = document.querySelector('.blob1');
+    const blob2 = document.querySelector('.blob2');
+
+    function pulseBlobs() {
+      requestAnimationFrame(pulseBlobs);
+
+      analyser.getByteFrequencyData(dataArray);
+
+      // Stronger focus on bass (0-150Hz approx, first ~8-12 bins)
+      let bass = 0;
+      const bassBins = 12; // More bins = stronger bass emphasis
+      for (let i = 0; i < bassBins; i++) {
+        bass += dataArray[i];
+      }
+      bass = bass / bassBins / 255; // Normalize 0-1
+
+      // Amplify bass impact and make it punchier
+      const bassBoost = Math.pow(bass, 1.3); // Makes strong beats pop more
+
+      // Base opacity 0.25 → max ~0.55 (more noticeable but still gentle)
+      const targetOpacity = 0.25 + 0.30 * bassBoost;
+
+      // Faster smoothing: higher lerp factor = ~25-30% faster response
+      blob1.style.opacity = blob1.style.opacity * 0.75 + targetOpacity * 0.25;
+      blob2.style.opacity = blob2.style.opacity * 0.75 + targetOpacity * 0.25;
+    }
+
+    enterScreen.addEventListener('click', () => {
+      enterScreen.classList.add('hidden');
+
+      logoContainer.classList.add('active');
+
+      audio.volume = volume.value;
+      audio.play().catch(err => console.log("Audio play failed:", err));
+
+      audioCtx.resume();
+
+      pulseBlobs(); // Start the enhanced pulsing
+
+      setTimeout(() => {
+        mainContainer.classList.add('visible');
+        nowPlaying.classList.add('visible');
+      }, 1800);
+
+      setTimeout(() => npInner.classList.add('show'), 2400);
+
+      setTimeout(() => {
+        npInner.classList.remove('show');
+        volumeLabel.classList.add('show');
+      }, 2400 + 8000);
+
+      setTimeout(() => {
+        logoContainer.classList.remove('active');
+      }, 3000);
+    });
+
+    volume.addEventListener('input', e => {
+      audio.volume = e.target.value;
+    });
+  </script>
+</body>
+</html>
