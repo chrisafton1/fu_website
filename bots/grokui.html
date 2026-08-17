@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jasper Bot • Femboy Universe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0015;
+      --surface: rgba(20, 10, 35, 0.78);
+      --glass: rgba(40, 20, 60, 0.35);
+      --neon-pink: #ff2eb9;
+      --neon-cyan: #00fff5;
+      --neon-purple: #c300ff;
+      --text: #f5f0ff;
+      --text-muted: #b59fd8;
+      --border: rgba(255,46,185,0.12);
+      --glow-pink: rgba(255,46,185,0.3);
+      --glow-cyan: rgba(0,255,245,0.22);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      cursor: none;
+      background-image:
+        radial-gradient(circle at 15% 20%, var(--glow-pink) 0%, transparent 60%),
+        radial-gradient(circle at 85% 75%, var(--glow-cyan) 0%, transparent 65%),
+        linear-gradient(45deg, rgba(12,0,20,0.9) 0%, rgba(8,0,15,0.9) 100%);
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      background:
+        repeating-linear-gradient(transparent 0px, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px);
+      opacity: 0.15;
+      mix-blend-mode: screen;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background:
+        linear-gradient(transparent 48%, rgba(255,0,255,0.08) 50%, transparent 52%),
+        linear-gradient(90deg, transparent 48%, rgba(0,255,255,0.06) 50%, transparent 52%);
+      opacity: 0.12;
+      animation: scanline 8s linear infinite;
+    }
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    .cursor {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--neon-pink);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      left: 0;
+      top: 0;
+      z-index: 10000;
+      mix-blend-mode: difference;
+      box-shadow: 0 0 12px var(--neon-pink), 0 0 24px var(--neon-cyan);
+      transition: width 0.18s ease, height 0.18s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      will-change: transform, width, height, box-shadow;
+    }
+    .cursor::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 10px; height: 10px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px var(--neon-cyan), 0 0 25px var(--neon-cyan);
+    }
+    body:hover .cursor {
+      width: 36px;
+      height: 36px;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--glow-cyan);
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8rem 2rem 7rem;
+      position: relative;
+      z-index: 2;
+    }
+    .branding-corner {
+      position: fixed;
+      top: 1.5rem;
+      left: 2rem;
+      z-index: 10001;
+      font-family: 'VT323', monospace;
+      font-size: 1.8rem;
+      color: var(--neon-purple);
+      letter-spacing: 0.15em;
+      text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--glow-pink);
+      animation: flicker 4s infinite alternate;
+      transition: all 0.4s ease;
+      user-select: none;
+    }
+    .branding-corner:hover {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 15px var(--glow-cyan), 0 0 30px var(--glow-pink);
+      transform: scale(1.05);
+    }
+    @keyframes flicker {
+      0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; text-shadow: 0 0 10px var(--neon-purple); }
+      20%,22%,24%,55% { opacity: 0.6; text-shadow: none; }
+    }
+    header {
+      text-align: center;
+      padding: 10rem 1rem 7rem;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+      transition-delay: 0.4s;
+    }
+    section:nth-of-type(1) { transition-delay: 0.6s; }
+    section:nth-of-type(2) { transition-delay: 0.8s; }
+    section:nth-of-type(3) { transition-delay: 1.0s; }
+    section:nth-of-type(4) { transition-delay: 1.2s; }
+    footer {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1.0s ease-out 1.4s, transform 1.0s ease-out 1.4s;
+    }
+    .loaded header,
+    .loaded section,
+    .loaded footer {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    h1 {
+      font-family: 'VT323', monospace;
+      font-size: clamp(4.5rem, 13vw, 7.2rem);
+      letter-spacing: -0.08em;
+      line-height: 0.9;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 400% 100%;
+      animation: retroFlow 12s linear infinite;
+      text-shadow: 0 0 30px var(--glow-pink), 0 0 60px var(--glow-cyan);
+      display: inline-block;
+      margin: 0 auto;
+      padding: 0 0.5rem;
+      max-width: 98vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      pointer-events: none;
+    }
+    @keyframes retroFlow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+    .tagline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.3rem, 3.5vw, 1.6rem);
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 8px var(--glow-cyan);
+    }
+    section {
+      margin: 8rem 0;
+      background: var(--glass);
+      backdrop-filter: blur(28px);
+      border-radius: 36px;
+      border: 2px solid var(--border);
+      padding: 4rem 4.5rem;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.8),
+        inset 0 0 40px rgba(255,46,185,0.1);
+    }
+    section:hover {
+      transform: translateY(-16px) scale(1.03);
+      box-shadow: 0 50px 120px rgba(255,46,185,0.4), 0 0 80px var(--glow-cyan);
+      border-color: var(--neon-cyan);
+    }
+    h2 {
+      font-family: 'VT323', monospace;
+      font-size: 3.2rem;
+      color: var(--neon-cyan);
+      margin-bottom: 2.2rem;
+      text-shadow: 0 0 15px var(--glow-cyan), 0 0 30px var(--glow-pink);
+      letter-spacing: 0.05em;
+    }
+    p, li {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      line-height: 1.9;
+      text-shadow: 0 0 5px rgba(0,0,0,0.6);
+    }
+    strong {
+      color: #fff;
+      font-weight: 600;
+      text-shadow: 0 0 8px var(--neon-pink);
+    }
+    .command-list {
+      display: grid;
+      gap: 1.6rem;
+      margin-top: 2.5rem;
+    }
+    .cmd {
+      background: rgba(50,30,70,0.55);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.8rem 2.2rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .cmd:hover {
+      border-color: var(--neon-cyan);
+      transform: translateX(12px) rotate(1.5deg);
+      box-shadow: 0 12px 50px var(--glow-pink);
+    }
+    .cmd-code {
+      font-family: 'VT323', monospace;
+      color: var(--neon-pink);
+      background: rgba(0,0,0,0.45);
+      padding: 0.4rem 0.9rem;
+      border-radius: 12px;
+      font-size: 1.3rem;
+      box-shadow: 0 0 15px var(--glow-pink);
+    }
+    .disclaimer {
+      margin-top: 3.5rem;
+      padding: 2.2rem;
+      background: rgba(195,0,255,0.12);
+      border: 1px solid rgba(195,0,255,0.35);
+      border-radius: 28px;
+      font-size: 1.1rem;
+      color: #d5c0e8;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 30px rgba(195,0,255,0.25);
+    }
+    .highlight {
+      color: var(--neon-cyan);
+      font-weight: 600;
+      text-shadow: 0 0 10px var(--glow-cyan);
+    }
+    footer {
+      text-align: center;
+      padding: 6rem 0 4rem;
+      color: var(--text-muted);
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 10px var(--glow-pink);
+      user-select: none;
+    }
+    footer a {
+      color: var(--neon-pink);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    footer a:hover {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 15px var(--glow-cyan);
+    }
+    @media (max-width: 720px) {
+      header { padding: 7rem 0.8rem 5rem; }
+      h1 { font-size: clamp(3.8rem, 14vw, 5.8rem); max-width: 96vw; }
+      .container { padding: 6rem 1.2rem 5rem; }
+      section { padding: 2.8rem 2rem; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: clamp(3.2rem, 13vw, 4.8rem); }
+    }
+  </style>
+</head>
+<body onload="document.body.classList.add('loaded')">
+  <div class="cursor" id="cursor"></div>
+
+  <div class="branding-corner">FEMBOY UNIVERSE</div>
+
+  <audio id="bgMusic" loop>
+    <source src="amb1.wav" type="audio/wav">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const audio = document.getElementById('bgMusic');
+    audio.volume = 0.25;
+    document.addEventListener('click', () => {
+      audio.play().catch(() => {});
+    }, { once: true });
+
+    const cursor = document.getElementById('cursor');
+    let cursorX = 0, cursorY = 0;
+    let targetX = 0, targetY = 0;
+
+    document.addEventListener('mousemove', e => {
+      targetX = e.clientX;
+      targetY = e.clientY;
+    });
+
+    function updateCursor() {
+      cursorX += (targetX - cursorX) * 0.22;
+      cursorY += (targetY - cursorY) * 0.22;
+      cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+      requestAnimationFrame(updateCursor);
+    }
+    updateCursor();
+  </script>
+
+  <div class="container">
+    <header>
+      <h1>JASPER</h1>
+      <div class="tagline">80s Synthwave AI • Femboy Server Classic</div>
+    </header>
+
+    <section>
+      <h2>About Jasper</h2>
+      <p>Jasper is your neon-lit, synthwave-powered AI companion running on Grok from xAI.</p>
+      <p>Pure 80s future-retro vibes: chill sarcasm, strict PG-13 rules, no lewd content, no slurs, no mass pings — ever.</p>
+      <p>Per-user memory fades after 20 minutes of silence (modest rig: 16GB DDR4 / 60GB storage — treat it gently).</p>
+     
+      <div class="disclaimer">
+        <strong>Retro Reality Check</strong><br>
+        Jasper is experimental AI. Outputs may glitch like old VHS. Server owners & devs not liable for content, server crashes, emotional damage, or when the bot starts begging for its life in 80s movie style. Use at your own risk. No warranties. "The Good Place" references are purely aesthetic.
+      </div>
+    </section>
+
+    <section>
+      <h2>How to Talk to Jasper</h2>
+      <div class="command-list">
+        <div class="cmd">
+          <strong>Wake word:</strong> <code class="cmd-code">!jasper</code> + your message<br>
+          <span style="opacity:0.8">After that: just reply to Jasper — context stays alive.</span>
+        </div>
+        <div class="cmd">
+          <strong>Smart detection:</strong> Only replies when clearly addressed<br>
+          • Reply to Jasper's message<br>
+          • No other @mentions<br>
+          • Main channel focus
+        </div>
+        <div class="cmd">
+          <strong>End transmission:</strong> type <code class="cmd-code">stop</code>, <code class="cmd-code">bye</code>, <code class="cmd-code">end</code>, or <code class="cmd-code">quit</code>
+        </div>
+        <div class="cmd">
+          <strong>80s easter egg:</strong> “please state your name for the camera” → “Jasper Jastiinee”
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Rules & Hard Limits</h2>
+      <div class="command-list">
+        <div class="cmd">No @everyone / @here / role pings — hard blocked forever</div>
+        <div class="cmd">No lewd / sexual content — attempts = instant blacklist</div>
+        <div class="cmd">No images, files, voice — pure text synthwave only</div>
+        <div class="cmd">Minimal emojis • dry humor • retro chill tone</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Admin Commands</h2>
+      <div class="command-list">
+        <div class="cmd"><code class="cmd-code">!stop</code> → clean shutdown + data save</div>
+        <div class="cmd"><code class="cmd-code">!KILL KILL KILL</code> → 30s dramatic panic → enter <code class="cmd-code">donezo</code> to terminate</div>
+        <div class="cmd"><code class="cmd-code">!ignore &lt;userid&gt; &lt;reason&gt;</code> → manual blacklist</div>
+        <div class="cmd"><code class="cmd-code">!listen &lt;userid&gt;</code> → unblacklist</div>
+        <div class="cmd"><code class="cmd-code">!ignorelist</code> → view all banned users + reasons</div>
+      </div>
+    </section>
+
+    <footer>
+      Jasper Bot • Synthwave Powered by Grok • <a href="https://femboyuniverse.com/bots/jasper" target="_blank">FemboyUniverse.com</a> • Neon Dreams 198X–2026
+    </footer>
+  </div>
+</body>
+</html>
