@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050b12">
+<title>Femboy Island — a Discord home</title>
+<meta name="description" content="Femboy Island is a cozy Discord community. Open voice rooms, fit checks, art, game nights, and people who get it. An island of Femboy Universe.">
+
+<!-- Open Graph: this is what shows up when someone pastes the link in Discord -->
+<meta property="og:title" content="Femboy Island">
+<meta property="og:description" content="A cozy Discord island. Come say hi.">
+<meta property="og:image" content="icon.png">
+<meta property="og:type" content="website">
+
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   FEMBOY ISLAND — FIV2
+   Everything you'd normally want to change lives in two places:
+   1. the CONFIG block at the top of the <script> down below
+   2. the text inside the <section> tags — plain HTML, safe to edit
+   Enter-animation timings live in the TIMELINE block, also below.
+   ═══════════════════════════════════════════════════════════ */
+
+:root{
+  --abyss:#050b12;
+  --deep:#081720;
+  --aqua:#46e5d0;
+  --blush:#ff6bc0;
+  --shell:#ffd7a8;
+  --foam:#e8fbf8;
+  --muted:#8fb3b8;
+
+  --glass:rgba(10,32,40,.52);
+  --glass-strong:rgba(8,26,33,.82);
+  --line:rgba(70,229,208,.16);
+  --line-warm:rgba(255,107,192,.22);
+
+  --display:'Fraunces',Georgia,serif;
+  --body:'Outfit',system-ui,-apple-system,sans-serif;
+  --mono:'Space Mono',ui-monospace,monospace;
+
+  --swell:0;      /* 0–1, driven by the music's bass */
+  --glow:0;       /* 0–1, plankton brightness */
+  --shell-w:min(1120px,100%);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+
+body{
+  font-family:var(--body);
+  font-weight:300;
+  background:var(--abyss);
+  color:var(--foam);
+  min-height:100svh;
+  overflow-x:hidden;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+body.locked{overflow:hidden}
+
+img{max-width:100%;display:block}
+a{color:inherit}
+::selection{background:var(--blush);color:#0b0b14}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:6px}
+
+/* ── water & sky ─────────────────────────────────────────── */
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 70% at 50% 108%, rgba(70,229,208,.20) 0%, transparent 60%),
+    radial-gradient(90% 60% at 82% -10%, rgba(255,107,192,.16) 0%, transparent 55%),
+    radial-gradient(70% 50% at 12% 8%, rgba(255,215,168,.09) 0%, transparent 60%),
+    linear-gradient(180deg,#050b12 0%,#071722 55%,#04222b 100%);
+}
+.horizon{position:fixed;left:0;right:0;bottom:0;height:46vh;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(70,229,208,.06) 55%,rgba(70,229,208,.13));
+  transform:translateY(calc(var(--swell) * -10px));transition:transform .12s linear}
+
+.plankton{position:fixed;inset:0;z-index:1;pointer-events:none}
+.drift{position:absolute;inset:0;will-change:transform}
+.spec{position:absolute;border-radius:50%;background:var(--aqua);
+  opacity:calc(.10 + var(--glow) * .55);
+  box-shadow:0 0 10px rgba(70,229,208,.8);
+  animation:bob linear infinite}
+.spec.warm{background:var(--blush);box-shadow:0 0 10px rgba(255,107,192,.8)}
+@keyframes bob{
+  0%{transform:translate3d(0,0,0) scale(.6)}
+  50%{transform:translate3d(14px,-26px,0) scale(1.15)}
+  100%{transform:translate3d(0,0,0) scale(.6)}
+}
+
+.tide{position:fixed;left:0;right:0;bottom:-2px;height:190px;z-index:1;pointer-events:none;
+  transform:translateY(calc(var(--swell) * -22px));transition:transform .1s linear}
+.wave{position:absolute;bottom:0;left:0;width:200%;height:100%;
+  background-repeat:repeat-x;background-position:bottom left;background-size:50% 100%;
+  will-change:transform}
+.wave-a{height:150px;opacity:.42;animation:drift 26s linear infinite;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 150' preserveAspectRatio='none'%3E%3Cpath d='M0 62 C 200 108 340 18 600 52 C 860 86 1000 8 1440 58 L1440 150 L0 150 Z' fill='rgba(70,229,208,0.10)'/%3E%3C/svg%3E")}
+.wave-b{height:120px;opacity:.5;animation:drift 17s linear infinite reverse;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 46 C 260 6 420 92 720 56 C 1020 20 1180 96 1440 44 L1440 120 L0 120 Z' fill='rgba(255,107,192,0.09)'/%3E%3C/svg%3E")}
+.wave-c{height:88px;opacity:.75;animation:drift 11s linear infinite;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 88' preserveAspectRatio='none'%3E%3Cpath d='M0 40 C 180 68 380 12 660 38 C 940 64 1140 10 1440 40 L1440 88 L0 88 Z' fill='rgba(8,40,48,0.9)'/%3E%3C/svg%3E")}
+@keyframes drift{to{transform:translate3d(-50%,0,0)}}
+
+/* ═══ ARRIVAL SEQUENCE ═══════════════════════════════════════
+   click → ripple from your cursor → the tide surges up over the
+   whole screen → drains away and leaves the page behind it.
+   ═════════════════════════════════════════════════════════ */
+.arrival{position:fixed;inset:0;z-index:900;display:grid;place-items:center;padding:1.5rem;
+  background:var(--abyss);cursor:pointer;overflow:hidden}
+.arrival.gone{opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s}
+.arrival-inner{text-align:center;max-width:34rem;position:relative;z-index:2;
+  transition:transform 1s cubic-bezier(.3,0,.2,1),opacity .75s ease,filter .75s ease}
+.arrival.launch .arrival-inner{transform:translateY(-46px) scale(1.06);opacity:0;filter:blur(9px)}
+
+.arrival h1{font-family:var(--display);font-weight:700;font-size:clamp(2.9rem,12vw,5.4rem);
+  line-height:.95;letter-spacing:-.03em;
+  background:linear-gradient(96deg,var(--aqua),var(--blush) 58%,var(--shell));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.arrival p{font-family:var(--mono);font-size:.8rem;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--muted);margin-top:1.6rem;animation:breathe 2.6s ease-in-out infinite}
+.arrival.launch p{animation:none}
+@keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+
+/* ripple that opens from wherever you clicked */
+.ripple{position:absolute;width:24px;height:24px;border-radius:50%;pointer-events:none;z-index:1;
+  border:1px solid rgba(70,229,208,.55);
+  background:radial-gradient(circle,rgba(70,229,208,.20),rgba(70,229,208,.03) 62%,transparent 70%);
+  transform:translate(-50%,-50%) scale(0);opacity:.9;
+  animation:ring 1.15s cubic-bezier(.22,.7,.3,1) forwards}
+@keyframes ring{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:.95}
+  100%{transform:translate(-50%,-50%) scale(90);opacity:0}
+}
+
+/* the surge: a full-screen water panel with a live crest on top */
+.surge{position:fixed;left:0;right:0;top:0;height:118vh;z-index:940;pointer-events:none;
+  transform:translate3d(0,112%,0);will-change:transform;
+  background:linear-gradient(180deg,#0b3540 0%,#082430 42%,#050f18 100%)}
+.surge::after{content:'';position:absolute;left:0;right:0;top:-1px;height:3px;
+  background:linear-gradient(90deg,transparent,rgba(232,251,248,.55),rgba(255,107,192,.4),transparent);
+  filter:blur(1px)}
+.crest-l{position:absolute;bottom:100%;left:0;width:200%;height:120px;
+  background-repeat:repeat-x;background-size:50% 100%;background-position:bottom left}
+.crest-1{opacity:.9;animation:drift 9s linear infinite;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 78 C 220 30 420 112 720 74 C 1010 38 1200 108 1440 66 L1440 120 L0 120 Z' fill='%230b3540'/%3E%3C/svg%3E")}
+.crest-2{opacity:.55;animation:drift 6s linear infinite reverse;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 92 C 260 62 400 116 700 90 C 1000 64 1180 114 1440 88 L1440 120 L0 120 Z' fill='rgba(70,229,208,0.35)'/%3E%3C/svg%3E")}
+.surge.rise{transform:translate3d(0,-14%,0);transition:transform 1.05s cubic-bezier(.62,.02,.34,1)}
+.surge.drain{transform:translate3d(0,112%,0);transition:transform 1.35s cubic-bezier(.36,.05,.2,1)}
+
+/* hero pieces surface one after another as the water drops past them */
+.arrive{opacity:0;transform:translateY(22px);filter:blur(6px);
+  transition:opacity .9s ease,transform 1s cubic-bezier(.2,.8,.25,1),filter .9s ease}
+.arrive.up{opacity:1;transform:none;filter:none}
+.hero h1.arrive{filter:none;clip-path:inset(0 0 105% 0);transform:translateY(30px);
+  transition:clip-path 1.1s cubic-bezier(.2,.8,.25,1),transform 1.1s cubic-bezier(.2,.8,.25,1),opacity .7s ease}
+.hero h1.arrive.up{clip-path:inset(0 0 -20% 0)}
+
+/* ── chrome: nav + dock ──────────────────────────────────── */
+.nav{position:fixed;top:calc(.85rem + env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  z-index:60;display:flex;align-items:center;gap:.35rem;padding:.4rem .45rem;
+  background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--line);border-radius:999px;box-shadow:0 10px 34px rgba(0,0,0,.5);
+  opacity:0;translate:0 -16px;transition:opacity .8s ease,translate .8s cubic-bezier(.2,.9,.3,1.1);
+  max-width:calc(100vw - 1.5rem)}
+.nav.up{opacity:1;translate:0 0}
+.nav a{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  text-decoration:none;color:var(--muted);padding:.5rem .8rem;border-radius:999px;
+  transition:color .25s,background .25s;white-space:nowrap}
+.nav a:hover{color:var(--foam);background:rgba(70,229,208,.10)}
+.nav .nav-join{color:#04161b;background:var(--aqua);font-weight:700}
+.nav .nav-join:hover{background:var(--foam);color:#04161b}
+@media (max-width:620px){.nav .hide-sm{display:none}}
+
+.dock{position:fixed;left:1rem;bottom:calc(1rem + env(safe-area-inset-bottom));z-index:60;
+  display:flex;align-items:center;gap:.7rem;padding:.55rem .8rem .55rem .6rem;
+  background:var(--glass-strong);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 34px rgba(0,0,0,.55);
+  opacity:0;translate:0 18px;transition:opacity .8s ease,translate .8s cubic-bezier(.2,.9,.3,1.1);
+  max-width:calc(100vw - 2rem)}
+.dock.up{opacity:1;translate:0 0}
+.dock button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:.9rem;
+  width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;transition:color .2s,background .2s}
+.dock button:hover{color:var(--foam);background:rgba(70,229,208,.12)}
+.dock .play{color:var(--abyss);background:var(--aqua)}
+.dock .play:hover{background:var(--foam);color:var(--abyss)}
+.track{min-width:0;line-height:1.2}
+.track b{display:block;font-weight:500;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:9.5rem}
+.track span{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.vol{-webkit-appearance:none;appearance:none;width:64px;height:3px;border-radius:3px;
+  background:rgba(232,251,248,.18);outline:none;flex:none}
+.vol::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--blush);cursor:pointer;box-shadow:0 0 10px rgba(255,107,192,.7)}
+.vol::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--blush);cursor:pointer}
+@media (max-width:560px){.dock .vol{display:none}.track b{max-width:7rem}}
+
+/* ── layout ──────────────────────────────────────────────── */
+main{position:relative;z-index:5;visibility:hidden}
+main.up{visibility:visible}
+.wrap{width:var(--shell-w);margin-inline:auto;padding-inline:clamp(1.1rem,4vw,2rem)}
+.band{padding-block:clamp(4.5rem,11vw,7.5rem)}
+
+.eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--aqua);opacity:.85;display:flex;align-items:center;gap:.7rem;margin-bottom:1.1rem}
+.eyebrow::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,var(--line),transparent)}
+
+h2{font-family:var(--display);font-weight:600;font-size:clamp(1.9rem,5.4vw,2.9rem);
+  letter-spacing:-.02em;line-height:1.08;margin-bottom:.7rem}
+h2 em{font-style:italic;color:var(--blush)}
+.lede{color:var(--muted);max-width:44ch;font-size:clamp(1rem,2.6vw,1.08rem)}
+
+/* ── hero ────────────────────────────────────────────────── */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(7rem,18vw,9rem) clamp(9rem,22vw,11rem);text-align:center;align-items:center}
+.crest{width:clamp(74px,17vw,104px);height:auto;border-radius:24px;margin-bottom:1.6rem;
+  box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 0 1px var(--line)}
+.crest.up{animation:hover-float 7s ease-in-out infinite 1s}
+@keyframes hover-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+
+.hero .kicker{font-family:var(--mono);font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1.4rem}
+.hero .kicker a{color:var(--blush);text-decoration:none;border-bottom:1px solid var(--line-warm)}
+.hero .kicker a:hover{color:var(--shell)}
+
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(3rem,13vw,6.6rem);
+  line-height:.9;letter-spacing:-.04em;padding-bottom:.08em;
+  background:linear-gradient(96deg,var(--aqua) 0%,var(--blush) 55%,var(--shell) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero h1 .isle{display:block;font-style:italic}
+.hero .tagline{margin:1.5rem auto 0;max-width:38ch;font-size:clamp(1.02rem,3vw,1.2rem);color:var(--muted)}
+
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:2rem}
+.chip{font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.5rem .85rem;border:1px solid var(--line);border-radius:999px;color:var(--muted);
+  background:rgba(10,32,40,.4);backdrop-filter:blur(10px);display:flex;align-items:center;gap:.5rem}
+.chip b{color:var(--foam);font-weight:700}
+.pip{width:7px;height:7px;border-radius:50%;background:var(--aqua);box-shadow:0 0 8px var(--aqua);
+  animation:beat 2s ease-in-out infinite}
+@keyframes beat{0%,100%{opacity:1}50%{opacity:.35}}
+
+.actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem;margin-top:2.3rem}
+.btn{font-family:var(--body);font-weight:500;font-size:1rem;text-decoration:none;cursor:pointer;
+  padding:.95rem 1.7rem;border-radius:16px;border:1px solid transparent;display:inline-flex;
+  align-items:center;gap:.65rem;transition:transform .35s cubic-bezier(.2,.9,.3,1.3),box-shadow .35s,background .25s,color .25s}
+.btn i{font-size:1.1em}
+.btn-primary{background:linear-gradient(100deg,var(--aqua),#7ff0c8);color:#03161b;font-weight:600;
+  box-shadow:0 14px 34px rgba(70,229,208,.22)}
+.btn-primary:hover{transform:translateY(-4px);box-shadow:0 22px 46px rgba(70,229,208,.34)}
+.btn-ghost{background:rgba(255,107,192,.08);border-color:var(--line-warm);color:var(--foam)}
+.btn-ghost:hover{transform:translateY(-4px);background:rgba(255,107,192,.16)}
+.btn:active{transform:translateY(-1px)}
+/* don't let the hover transform fight the arrival transition */
+.actions .btn.arrive:not(.up):hover{transform:translateY(22px)}
+
+.scroll-hint{margin-top:3rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--muted);opacity:.6;display:flex;flex-direction:column;
+  align-items:center;gap:.6rem}
+.scroll-hint i{animation:sink 2.4s ease-in-out infinite}
+@keyframes sink{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(7px);opacity:1}}
+
+/* ── cards ───────────────────────────────────────────────── */
+.grid{display:grid;gap:1rem;margin-top:2.6rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.card{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--line);border-radius:20px;padding:1.6rem;
+  transition:transform .4s cubic-bezier(.2,.9,.3,1.2),border-color .4s,background .4s}
+.card:hover{transform:translateY(-6px);border-color:var(--line-warm);background:rgba(14,42,51,.6)}
+.card i{font-size:1.15rem;color:var(--aqua);margin-bottom:.9rem;display:block}
+.card:nth-child(even) i{color:var(--blush)}
+.card h3{font-family:var(--display);font-weight:600;font-size:1.18rem;margin-bottom:.4rem;letter-spacing:-.01em}
+.card p{color:var(--muted);font-size:.95rem}
+
+/* ── weekly schedule ─────────────────────────────────────── */
+.schedule{margin-top:2.4rem;border-top:1px solid var(--line)}
+.slot{display:grid;grid-template-columns:5.5rem 1fr auto;gap:1rem;align-items:baseline;
+  padding:1.15rem .3rem;border-bottom:1px solid var(--line);transition:background .3s,padding-left .3s}
+.slot:hover{background:rgba(70,229,208,.05);padding-left:.9rem}
+.slot .day{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--aqua)}
+.slot .what{font-size:1.02rem;font-weight:400}
+.slot .what small{display:block;color:var(--muted);font-size:.87rem;font-weight:300}
+.slot .at{font-family:var(--mono);font-size:.75rem;color:var(--muted);white-space:nowrap}
+@media (max-width:560px){
+  .slot{grid-template-columns:1fr auto;gap:.2rem 1rem}
+  .slot .day{grid-column:1/-1;margin-bottom:.15rem}
+}
+
+/* ── arrival steps (a real sequence, so it's numbered) ───── */
+.steps{counter-reset:step;margin-top:2.4rem;display:grid;gap:.6rem}
+.step{counter-increment:step;display:grid;grid-template-columns:2.4rem 1fr;gap:1rem;align-items:start;
+  padding:1.1rem 1.2rem;border-radius:16px;background:rgba(10,32,40,.35);border:1px solid transparent;
+  transition:border-color .3s,background .3s}
+.step:hover{border-color:var(--line);background:rgba(10,32,40,.6)}
+.step::before{content:counter(step,decimal-leading-zero);font-family:var(--mono);font-size:.8rem;
+  color:var(--blush);padding-top:.15rem}
+.step b{font-weight:500;display:block}
+.step span{color:var(--muted);font-size:.93rem}
+
+/* ── rules ───────────────────────────────────────────────── */
+.rules{display:grid;gap:.55rem;margin-top:2.4rem}
+.rule{display:flex;gap:.9rem;align-items:flex-start;padding:.95rem 1.1rem;border-radius:14px;
+  background:rgba(255,107,192,.045);border:1px solid var(--line-warm)}
+.rule i{color:var(--blush);font-size:.85rem;padding-top:.35rem}
+.rule p{font-size:.97rem}
+.rule p small{display:block;color:var(--muted);font-size:.87rem}
+
+/* ── faq ─────────────────────────────────────────────────── */
+.faq{margin-top:2.4rem;border-top:1px solid var(--line)}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:1.15rem .3rem;display:flex;justify-content:space-between;
+  align-items:center;gap:1rem;font-size:1.02rem;transition:color .25s}
+summary::-webkit-details-marker{display:none}
+summary:hover{color:var(--aqua)}
+summary i{font-size:.75rem;color:var(--aqua);transition:transform .3s}
+details[open] summary i{transform:rotate(45deg)}
+details p{padding:0 .3rem 1.3rem;color:var(--muted);max-width:58ch;font-size:.96rem}
+
+/* ── closing cta + footer ────────────────────────────────── */
+.closing{text-align:center;padding-block:clamp(4.5rem,11vw,7rem) clamp(7rem,16vw,9rem)}
+.closing h2{margin-inline:auto;max-width:16ch}
+.closing .lede{margin:0 auto 2rem}
+
+footer{position:relative;z-index:5;border-top:1px solid var(--line);
+  padding:2.2rem 0 calc(6.5rem + env(safe-area-inset-bottom));text-align:center}
+footer .fine{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted)}
+footer .fine a{color:var(--aqua);text-decoration:none;border-bottom:1px solid var(--line)}
+footer .fine a:hover{color:var(--blush);border-color:var(--line-warm)}
+footer .love{margin-top:.9rem;font-size:.88rem;color:var(--muted)}
+.heart{color:var(--blush);display:inline-block;animation:beat-heart 1.9s ease-in-out infinite}
+@keyframes beat-heart{0%,100%{transform:scale(1)}50%{transform:scale(1.28)}}
+
+/* ── reveal on scroll ────────────────────────────────────── */
+.rise{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.8,.3,1),transform .8s cubic-bezier(.2,.8,.3,1)}
+.rise.seen{opacity:1;transform:none}
+
+/* ── toast ───────────────────────────────────────────────── */
+.toast{position:fixed;left:50%;bottom:calc(5.5rem + env(safe-area-inset-bottom));translate:-50% 14px;
+  z-index:80;background:var(--glass-strong);border:1px solid var(--line);border-radius:999px;
+  padding:.6rem 1.2rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  opacity:0;pointer-events:none;transition:opacity .35s,translate .35s;backdrop-filter:blur(14px)}
+.toast.show{opacity:1;translate:-50% 0}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .rise,.arrive{opacity:1;transform:none;filter:none;clip-path:none}
+  .surge,.ripple{display:none}
+}
+</style>
+</head>
+<body class="locked">
+
+<div class="sky" aria-hidden="true"></div>
+<div class="plankton" id="plankton" aria-hidden="true"></div>
+<div class="horizon" aria-hidden="true"></div>
+<div class="tide" aria-hidden="true">
+  <div class="wave wave-a"></div>
+  <div class="wave wave-b"></div>
+  <div class="wave wave-c"></div>
+</div>
+
+<!-- arrival gate (also unlocks audio — browsers require a click first) -->
+<div class="arrival" id="arrival" role="button" tabindex="0" aria-label="Enter the site">
+  <div class="arrival-inner">
+    <h1>Femboy Island</h1>
+    <p>tap anywhere to wash ashore</p>
+  </div>
+</div>
+
+<!-- the wave that sweeps up over everything, then drains -->
+<div class="surge" id="surge" aria-hidden="true">
+  <div class="crest-l crest-1"></div>
+  <div class="crest-l crest-2"></div>
+</div>
+
+<nav class="nav" id="nav" aria-label="Sections">
+  <a href="#island" class="hide-sm">Island</a>
+  <a href="#week" class="hide-sm">This week</a>
+  <a href="#arrive">Arriving</a>
+  <a href="#faq" class="hide-sm">FAQ</a>
+  <a href="#" class="nav-join" data-invite>Join</a>
+</nav>
+
+<main id="main">
+
+  <!-- ── hero ─────────────────────────────────────────── -->
+  <header class="hero wrap">
+    <img src="icon.png" alt="" class="crest arrive" id="crest" onerror="this.style.display='none'">
+    <p class="kicker arrive">a small island somewhere in this <a href="#" data-parent>Femboy Universe</a></p>
+    <h1 class="arrive">Femboy<span class="isle">Island</span></h1>
+    <p class="tagline arrive">A small, warm corner of Discord. Cozy chats, open VCs, fit checks, and people who already get it.</p>
+
+    <div class="chips arrive">
+      <span class="chip"><span class="pip"></span> <b id="online">—</b> online now</span>
+      <span class="chip"><b id="members">—</b> members</span>
+      <span class="chip">sfw &amp; moderated</span>
+    </div>
+
+    <div class="actions">
+      <a href="#" class="btn btn-primary arrive" data-invite><i class="fab fa-discord"></i> Join the Discord</a>
+      <button class="btn btn-ghost arrive" id="copy"><i class="fa-regular fa-copy"></i> Copy invite</button>
+    </div>
+
+    <div class="scroll-hint arrive"><span>look around</span><i class="fa-solid fa-chevron-down"></i></div>
+  </header>
+
+  <!-- ── what's here ──────────────────────────────────── -->
+  <section class="band wrap" id="island">
+    <p class="eyebrow rise">what's on the island</p>
+    <h2 class="rise">Not another dead server with <em>4,000 lurkers</em></h2>
+    <p class="lede rise">A currently small server but with a Active Community, light rules, and active staff.</p>
+
+    <div class="grid">
+      <article class="card rise"><i class="fa-solid fa-comments"></i>
+        <h3>General chaos</h3>
+        <p>The main chat rarely sleeps. Drop in mid-conversation — nobody expects an introduction first.</p></article>
+
+      <article class="card rise"><i class="fa-solid fa-microphone-lines"></i>
+        <h3>Open voice rooms</h3>
+        <p>VCs for gaming, studying, or sitting quietly next to people. Mic optional, camera never required.</p></article>
+
+      <article class="card rise"><i class="fa-solid fa-shirt"></i>
+        <h3>Fit checks</h3>
+        <p>Post the outfit, get told you look good, do it again tomorrow. Compliments are basically mandatory.</p></article>
+
+      <article class="card rise"><i class="fa-solid fa-palette"></i>
+        <h3>Art &amp; things you made</h3>
+        <p>Drawings, edits, builds, playlists, questionable Blender experiments. Shared with people, not an algorithm.</p></article>
+
+      <article class="card rise"><i class="fa-solid fa-gamepad"></i>
+        <h3>Game nights</h3>
+        <p>Minecraft, Gartic Phone, Among Us, whatever's cursed this week. Announced in advance, no signup.</p></article>
+
+      <article class="card rise"><i class="fa-solid fa-mug-hot"></i>
+        <h3>Somewhere to land</h3>
+        <p>A quiet channel for rough days, kept calm by mods who actually read it. Vent, or just lurk until you don't need to.</p></article>
+    </div>
+  </section>
+
+  <!-- ── weekly rhythm ────────────────────────────────── -->
+  <section class="band wrap" id="week">
+    <p class="eyebrow rise">island time</p>
+    <h2 class="rise">The week, roughly</h2>
+    <p class="lede rise">Recurring stuff. Times drift when everyone's asleep — check <span style="color:var(--foam)">#events</span> for the real call.</p>
+
+    <div class="schedule rise">
+      <div class="slot"><span class="day">Wed</span>
+        <span class="what">Art jam<small>Draw together in VC, share whatever comes out</small></span>
+        <span class="at">8:00 PM PT</span></div>
+      <div class="slot"><span class="day">Fri</span>
+        <span class="what">Movie night<small>Watch party, chat commentary encouraged</small></span>
+        <span class="at">9:00 PM PT</span></div>
+      <div class="slot"><span class="day">Sat</span>
+        <span class="what">Game night<small>Whatever the poll picks that week</small></span>
+        <span class="at">8:00 PM PT</span></div>
+      <div class="slot"><span class="day">Sun</span>
+        <span class="what">Music &amp; wind down<small>Shared queue, low lights, low stakes</small></span>
+        <span class="at">7:00 PM PT</span></div>
+    </div>
+  </section>
+
+  <!-- ── how to arrive ────────────────────────────────── -->
+  <section class="band wrap" id="arrive">
+    <p class="eyebrow rise">washing ashore</p>
+    <h2 class="rise">Four steps, about <em>ninety seconds</em></h2>
+
+    <div class="steps">
+      <div class="step rise"><b>Open the invite</b><span>Works on desktop, browser, and the phone app.</span></div>
+      <div class="step rise"><b>Read the rules, hit the reaction</b><span>Short list, no quiz. It unlocks the rest of the server.</span></div>
+      <div class="step rise"><b>Grab your roles</b><span>Pronouns, colors, ping preferences, and which game nights you want pinged for.</span></div>
+      <div class="step rise"><b>Say hi — or don't</b><span>Introductions are welcome, lurking is completely fine. Plenty of people take a week.</span></div>
+    </div>
+  </section>
+
+  <!-- ── rules ────────────────────────────────────────── -->
+  <section class="band wrap" id="rules">
+    <p class="eyebrow rise">before you land</p>
+    <h2 class="rise">The whole rulebook</h2>
+    <p class="lede rise">It's short on purpose. Mods enforce it evenly, including on regulars.</p>
+
+    <div class="rules">
+      <div class="rule rise"><i class="fa-solid fa-heart"></i><p>Be kind. No exceptions, no "it was a joke."<small>Bigotry, harassment, and creepy behavior get you removed, not warned.</small></p></div>
+      <div class="rule rise"><i class="fa-solid fa-eye"></i><p>Keep public channels SFW.<small>This includes pfps, names, and status. It's a hangout, not a hookup server.</small></p></div>
+      <div class="rule rise"><i class="fa-solid fa-envelope"></i><p>Ask before DMing anyone.<small>No unsolicited DMs, ever. Report them and we handle it.</small></p></div>
+      <div class="rule rise"><i class="fa-solid fa-shield-halved"></i><p>Leave other servers' drama at the shore.<small>No callouts, no raids, no dragging fights in from elsewhere.</small></p></div>
+      <div class="rule rise"><i class="fa-solid fa-hand"></i><p>If something feels off, ping a mod.<small>You'll never be in trouble for reporting something in good faith.</small></p></div>
+    </div>
+  </section>
+
+  <!-- ── faq ──────────────────────────────────────────── -->
+  <section class="band wrap" id="faq">
+    <p class="eyebrow rise">questions people actually ask</p>
+    <h2 class="rise">Before you knock</h2>
+
+    <div class="faq rise">
+      <details><summary>Do I have to be a femboy?<i class="fa-solid fa-plus"></i></summary>
+        <p>No. Trans, enby, questioning, cis, allies — if you're friendly and you follow the rules, you're welcome. Nobody's checking anything at the door.</p></details>
+
+      <details><summary>Is this the same as Femboy Universe?<i class="fa-solid fa-plus"></i></summary>
+        <p>Same team, different island. Femboy Universe is the main server with VRChat and Minecraft attached. This one is Discord-only and smaller on purpose — the vibe is quieter here. You're welcome in both.</p></details>
+
+      <details><summary>Do I need a mic or camera?<i class="fa-solid fa-plus"></i></summary>
+        <p>No. Text-only is completely normal, and plenty of people sit in VC muted just for the background noise.</p></details>
+
+      <details><summary>Is it moderated?<i class="fa-solid fa-plus"></i></summary>
+        <p>Yes, actively. There's a mod team across time zones, a report channel, and no tolerance for creeps. Rules apply to everyone equally, staff included.</p></details>
+
+      <details><summary>Can I be staff?<i class="fa-solid fa-plus"></i></summary>
+        <p>Applications open in the server when we need people. The realistic answer: be around for a while, be helpful, and you'll get noticed.</p></details>
+    </div>
+  </section>
+
+  <!-- ── closing ──────────────────────────────────────── -->
+  <section class="closing wrap">
+    <h2 class="rise">The door's <em>already open</em></h2>
+    <p class="lede rise">No application, no vouching, no waiting on approval. Click, read the rules, come say hi.</p>
+    <a href="#" class="btn btn-primary rise" data-invite><i class="fab fa-discord"></i> Join the Discord</a>
+  </section>
+</main>
+
+<footer>
+  <p class="fine">Femboy Island — an island of <a href="#" data-parent>Femboy Universe</a></p>
+  <p class="love">made with <span class="heart">❤</span> for the softest people on the internet</p>
+</footer>
+
+<div class="dock" id="dock">
+  <button class="play" id="play" aria-label="Play or pause music"><i class="fa-solid fa-play" id="play-i"></i></button>
+  <button id="next" aria-label="Next track"><i class="fa-solid fa-forward-step"></i></button>
+  <div class="track"><b id="t-title">—</b><span id="t-artist">—</span></div>
+  <input type="range" class="vol" id="vol" min="0" max="1" step=".01" value=".5" aria-label="Volume">
+</div>
+
+<div class="toast" id="toast"></div>
+<audio id="bgm" loop preload="none"></audio>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — the only part you need to touch
+   ═══════════════════════════════════════════════════════════ */
+const CONFIG = {
+  invite:    "https://discord.gg/uNcnb3YpY9",              // ← Femboy Island's invite
+  parentUrl: "https://discord.gg/SVkaXxNvhZ",            // ← Femboy Universe (swap for its website)
+
+  // Live "online now" needs the server widget switched on:
+  // Server Settings → Widget → Enable Server Widget. Then paste the Server ID here.
+  // Leave it empty and the chip just falls back to the number below.
+  guildId:   "1519473649143255192",
+  fallbackOnline: "40",
+  members:   "127+",                                   // widget can't report totals — update by hand
+
+  // Drop these files next to the html (same ones as the main site, or new ones)
+  tracks: [
+    { file:"main1.mp3",     title:"Valentines Menu", artist:"Niko Patty" },
+    { file:"main2.mp3",     title:"Nana",            artist:"Polo & Pan" },
+    { file:"main-tadc.wav", title:"TADC Main Theme", artist:"GooseWorx" }
+  ]
+};
+
+/* ═══════════════════════════════════════════════════════════
+   TIMELINE — every beat of the enter animation, in ms from click.
+   Bump these if you want it snappier or more dramatic.
+   ═══════════════════════════════════════════════════════════ */
+const TIMELINE = {
+  surgeUp:   140,   // wave starts climbing
+  covered:   960,   // screen is water — safe to swap the page underneath
+  drain:    1180,   // wave starts falling away
+  hero:     1420,   // hero pieces begin surfacing
+  stagger:   110,   // gap between each hero piece
+  nav:      2150,
+  dock:     2320,
+  fadeIn:   2000    // music volume ramp
+};
+
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const root = document.documentElement;
+const $ = s => document.querySelector(s);
+
+/* ── links ─────────────────────────────────────────────── */
+document.querySelectorAll("[data-invite]").forEach(a => {
+  a.href = CONFIG.invite; a.target = "_blank"; a.rel = "noopener";
+});
+document.querySelectorAll("[data-parent]").forEach(a => {
+  a.href = CONFIG.parentUrl; a.target = "_blank"; a.rel = "noopener";
+});
+
+/* ── plankton ──────────────────────────────────────────── */
+(() => {
+  const host = $("#plankton");
+  const layers = [{ n:34, d:8 }, { n:22, d:18 }, { n:12, d:34 }];
+  layers.forEach(({ n, d }) => {
+    const layer = document.createElement("div");
+    layer.className = "drift"; layer.dataset.depth = d;
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("div");
+      s.className = "spec" + (Math.random() < .28 ? " warm" : "");
+      const size = Math.random() * 2.6 + 1.2;
+      s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;
+        animation-duration:${8 + Math.random()*14}s;animation-delay:${-Math.random()*18}s`;
+      layer.appendChild(s);
+    }
+    host.appendChild(layer);
+  });
+
+  // parallax: move 3 layers, not 68 elements — one write per frame
+  if (reduced || matchMedia("(pointer: coarse)").matches) return;
+  const drifts = [...document.querySelectorAll(".drift")];
+  let tx = 0, ty = 0, queued = false;
+  addEventListener("mousemove", e => {
+    tx = (e.clientX / innerWidth) * 2 - 1;
+    ty = (e.clientY / innerHeight) * 2 - 1;
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      drifts.forEach(l => {
+        const d = +l.dataset.depth;
+        l.style.transform = `translate3d(${-tx*d}px, ${-ty*d}px, 0)`;
+      });
+    });
+  }, { passive:true });
+})();
+
+/* ── music + the tide that reacts to it ────────────────── */
+const audio = $("#bgm"), playBtn = $("#play"), playIcon = $("#play-i"), vol = $("#vol");
+let queue = [...CONFIG.tracks].sort(() => Math.random() - .5);
+let index = 0, ctx = null, analyser = null, bins = null, looping = false;
+
+function load(i, autoplay) {
+  const t = queue[i];
+  if (!t) return;
+  audio.src = t.file;
+  $("#t-title").textContent = t.title;
+  $("#t-artist").textContent = t.artist;
+  if (autoplay) audio.play().catch(() => {});
+}
+
+function connect() {
+  if (ctx) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  try {
+    ctx = new AC();
+    const src = ctx.createMediaElementSource(audio);
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = .78;
+    src.connect(analyser); analyser.connect(ctx.destination);
+    bins = new Uint8Array(analyser.frequencyBinCount);
+  } catch (e) { /* audio still plays, the tide just stays calm */ }
+}
+
+let swell = 0, glow = 0;
+function tide() {
+  requestAnimationFrame(tide);
+  if (!analyser || audio.paused) {
+    swell += (0 - swell) * .05; glow += (0 - glow) * .05;   // settles back down on its own
+  } else {
+    analyser.getByteFrequencyData(bins);
+    let bass = 0;
+    for (let i = 0; i < 12; i++) bass += bins[i];
+    bass = Math.pow(bass / 12 / 255, 1.35);
+    swell += (bass - swell) * .22;
+    glow  += (bass - glow)  * .12;
+  }
+  root.style.setProperty("--swell", swell.toFixed(3));
+  root.style.setProperty("--glow",  glow.toFixed(3));
+}
+function startTide() { if (!looping && !reduced) { looping = true; requestAnimationFrame(tide); } }
+
+// ramp the volume up instead of slapping the music on at full blast
+function fadeIn(ms) {
+  const target = +vol.value, start = performance.now();
+  audio.volume = 0;
+  (function step(now) {
+    const p = Math.min((now - start) / ms, 1);
+    audio.volume = target * p;
+    if (p < 1) requestAnimationFrame(step);
+  })(start);
+}
+
+playBtn.addEventListener("click", () => {
+  connect(); ctx && ctx.resume();
+  audio.paused ? audio.play().catch(() => {}) : audio.pause();
+});
+$("#next").addEventListener("click", () => {
+  index = (index + 1) % queue.length;
+  connect(); ctx && ctx.resume();
+  load(index, true);
+});
+audio.addEventListener("play",  () => { playIcon.className = "fa-solid fa-pause"; });
+audio.addEventListener("pause", () => { playIcon.className = "fa-solid fa-play"; });
+vol.addEventListener("input", e => { audio.volume = +e.target.value; });
+
+/* ── live member count ─────────────────────────────────── */
+function countTo(el, target) {
+  if (reduced) { el.textContent = target; return; }
+  const start = performance.now(), dur = 900;
+  (function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(step);
+  })(start);
+}
+$("#members").textContent = CONFIG.members;
+if (CONFIG.guildId) {
+  fetch(`https://discord.com/api/guilds/${CONFIG.guildId}/widget.json`)
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(d => countTo($("#online"), d.presence_count))
+    .catch(() => { $("#online").textContent = CONFIG.fallbackOnline; });
+} else {
+  $("#online").textContent = CONFIG.fallbackOnline;
+}
+
+/* ── copy invite ───────────────────────────────────────── */
+const toast = $("#toast");
+let toastTimer;
+function say(msg) {
+  toast.textContent = msg; toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+}
+$("#copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(CONFIG.invite); say("invite copied"); }
+  catch { say(CONFIG.invite); }
+});
+
+/* ── reveal on scroll ──────────────────────────────────── */
+const io = new IntersectionObserver((entries, obs) => {
+  entries.forEach((e, i) => {
+    if (!e.isIntersecting) return;
+    e.target.style.transitionDelay = `${Math.min(i * 60, 240)}ms`;
+    e.target.classList.add("seen");
+    obs.unobserve(e.target);
+  });
+}, { rootMargin: "0px 0px -12% 0px", threshold: .12 });
+document.querySelectorAll(".rise").forEach(el => io.observe(el));
+
+/* ═══ THE ARRIVAL ═══════════════════════════════════════════
+   ripple → surge up → page swaps behind the water → drain →
+   hero surfaces piece by piece → nav and dock settle in.
+   ═════════════════════════════════════════════════════════ */
+const arrival = $("#arrival"), surge = $("#surge");
+const heroBits = [...document.querySelectorAll(".arrive")];
+let entered = false;
+
+function enter(x, y) {
+  if (entered) return;
+  entered = true;
+
+  // audio has to start on this gesture or the browser blocks it
+  load(index, false);
+  connect();
+  if (ctx) ctx.resume();
+  audio.play().then(() => fadeIn(TIMELINE.fadeIn)).catch(() => {});
+  startTide();
+
+  if (reduced) {                       // no theatrics, just show the page
+    arrival.classList.add("gone");
+    document.body.classList.remove("locked");
+    $("#main").classList.add("up");
+    heroBits.forEach(el => el.classList.add("up"));
+    $("#nav").classList.add("up"); $("#dock").classList.add("up");
+    return;
+  }
+
+  // 1. ripple opens from the exact spot you clicked
+  const r = document.createElement("div");
+  r.className = "ripple";
+  r.style.left = (x ?? innerWidth / 2) + "px";
+  r.style.top  = (y ?? innerHeight / 2) + "px";
+  arrival.appendChild(r);
+  arrival.classList.add("launch");     // title lifts, blurs, dissolves
+
+  // 2. the tide climbs
+  setTimeout(() => surge.classList.add("rise"), TIMELINE.surgeUp);
+
+  // 3. hidden under the water: swap the arrival screen for the page
+  setTimeout(() => {
+    arrival.classList.add("gone");
+    document.body.classList.remove("locked");
+    $("#main").classList.add("up");
+    swell = 1;                         // one big push, then it settles with the music
+  }, TIMELINE.covered);
+
+  // 4. it drains away and the hero is standing there
+  setTimeout(() => { surge.classList.remove("rise"); surge.classList.add("drain"); }, TIMELINE.drain);
+
+  heroBits.forEach((el, i) => {
+    setTimeout(() => el.classList.add("up"), TIMELINE.hero + i * TIMELINE.stagger);
+  });
+
+  setTimeout(() => $("#nav").classList.add("up"),  TIMELINE.nav);
+  setTimeout(() => $("#dock").classList.add("up"), TIMELINE.dock);
+  setTimeout(() => { arrival.remove(); surge.remove(); }, TIMELINE.drain + 2600);
+}
+
+arrival.addEventListener("pointerdown", e => enter(e.clientX, e.clientY));
+arrival.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); enter(); }
+});
+</script>
+</body>
+</html>
