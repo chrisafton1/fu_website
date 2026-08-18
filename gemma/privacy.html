@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma — Privacy Policy</title>
+<meta name="description" content="What Gemma stores, why, how long for, and how to have it deleted.">
+<meta name="theme-color" content="#080f1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gemma.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="index.html"><span class="mark">G<img src="pfp.jpg" alt="" onerror="this.remove()"></span>Gemma</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="members.html">For members</a>
+      <a href="admins.html">For server owners</a>
+      <a href="status.html">Status</a>
+      <a class="on" href="privacy.html">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <section class="legal" style="border:0">
+    <div class="eyebrow">Legal</div>
+    <h2>Privacy Policy</h2>
+    <p class="updated">Last updated 18 August 2026</p>
+    <p class="lede">Short version: Gemma stores what your server configures and what you deliberately submit — applications, tickets, moderation records. She doesn't archive ordinary chat, doesn't sell anything to anyone, and everything lives on one machine the operator controls.</p>
+
+    <div class="toc">
+      <ol>
+        <li><a href="#who">Who is responsible</a></li>
+        <li><a href="#what">What is stored</a></li>
+        <li><a href="#notstored">What is not stored</a></li>
+        <li><a href="#why">Why it's stored</a></li>
+        <li><a href="#messages">How messages are handled</a></li>
+        <li><a href="#retention">How long it's kept</a></li>
+        <li><a href="#sharing">Who can see it</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#rights">Your choices &amp; requests</a></li>
+        <li><a href="#children">Children</a></li>
+        <li><a href="#website">This website</a></li>
+        <li><a href="#changes">Changes</a></li>
+        <li><a href="#globallist">The global ban list</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ol>
+    </div>
+
+    <h3 id="who">1. Who is responsible</h3>
+    <p>Gemma is operated by a private individual ("the operator") and runs on hardware the operator owns. There is no company behind her and no third-party analytics, advertising or data-broker involvement.</p>
+    <p>Each server that adds Gemma decides what she does there. For most purposes the server's owners control the data in their community; the operator provides the software and the hosting.</p>
+
+    <h3 id="what">2. What is stored</h3>
+    <p>Everything sits in a single database file. By feature:</p>
+    <ul>
+      <li><b>Server configuration</b> — server ID, channel and role IDs you select, feature toggles and any text you write (welcome messages, autoresponses, application questions, ticket messages).</li>
+      <li><b>Applications</b> — the answers submitted, the applicant's user ID, timestamps, the accept/deny decision, the reviewing staff member's ID and any note they leave.</li>
+      <li><b>Tickets</b> — who opened it, when, who claimed it, and when closed a transcript of the channel: message text, author names and IDs, timestamps, embed titles and links to any files attached.</li>
+      <li><b>Moderation records</b> — a numbered case per ban, kick, timeout, warning or purge, holding the target's user ID, the moderator's ID, the reason, duration and any evidence files uploaded by staff. Evidence is copied into the server's own log channel.</li>
+      <li><b>Highlight board</b> — the message ID, channel, author ID and reaction count for messages that reach the threshold.</li>
+      <li><b>Reaction roles</b> — which emoji maps to which role on which message.</li>
+      <li><b>Jail</b> — who is jailed, by whom, why, until when, and the roles they had so they can be restored.</li>
+      <li><b>Server logs</b> — if a server enables logging, deleted/edited message content, joins/leaves, role and channel changes are posted into that server's own log channels (they live in Discord, not in the bot's database).</li>
+      <li><b>Voice channels</b> — which temporary voice channel belongs to whom, deleted when the channel is.</li>
+      <li><b>Ban network</b> — if a server links to others owned by the same person, bans made there are copied to the linked servers, storing the banned account's ID, the reason, and which server it came from.</li>
+      <li><b>Global ban list</b> — for accounts added to the shared list: the user ID, the reason shown to every participating server, a category, a link to the evidence, who added it and when, and any later pardon. Servers that enrol store which listed accounts they have banned or chosen to allow.</li>
+      <li><b>Protection features</b> — anti-spam, anti-raid and anti-nuke keep short-lived counters in memory (a few seconds to minutes) and log the actions they take to the server's log channels.</li>
+      <li><b>Operational logs</b> — errors and events written to log files on the host, which may include user IDs and channel IDs for troubleshooting. These rotate and are overwritten automatically.</li>
+    </ul>
+    <p>Discord user IDs are numbers, not names. Display names appear where they're part of a transcript or embed.</p>
+
+    <h3 id="notstored">3. What is not stored</h3>
+    <ul>
+      <li>Ordinary channel messages. They are read in the moment to check for autoresponder triggers or trap-channel activity, then discarded.</li>
+      <li>Direct messages between users, voice audio, or anything in servers Gemma isn't in.</li>
+      <li>Email addresses, passwords, payment details or IP addresses of Discord users.</li>
+      <li>Message content from channels the bot cannot see.</li>
+    </ul>
+
+    <h3 id="why">4. Why it's stored</h3>
+    <p>Only to make the features work: remembering a server's settings between restarts, letting staff review an application, giving moderators a record with evidence, keeping the highlight board's counts accurate. There is no profiling, no advertising, and no sale or sharing of data.</p>
+
+    <h3 id="messages">5. How messages are handled</h3>
+    <p>Gemma uses Discord's Message Content intent so autoresponders and the trap channel can work. That means she receives the text of messages in channels she can see. Nothing is written down unless a feature specifically requires it — a matched autoresponder produces a reply, not a stored record; a ticket transcript is only created when a ticket is closed.</p>
+
+    <h3 id="retention">6. How long it's kept</h3>
+    <ul>
+      <li><b>Configuration</b> — until changed or the bot is removed from the server.</li>
+      <li><b>Applications, tickets and moderation cases</b> — indefinitely, so staff can look back, unless deleted on request or by a server manager using the bot's own commands.</li>
+      <li><b>Backups</b> — encrypted-at-rest copies are not made; snapshots of the database are kept on a rolling basis (most recent set only) and older ones are deleted automatically.</li>
+      <li><b>Log files</b> — rotated and overwritten within roughly 30 MB of activity.</li>
+    </ul>
+    <p>Removing Gemma from a server stops all processing for that server. Stored data for it may remain in the database and in existing backups until deleted on request or overwritten as backups rotate.</p>
+
+    <h3 id="sharing">7. Who can see it</h3>
+    <ul>
+      <li><b>Your server's staff</b> — anything posted into your log, review or transcript channels. Set those channels' permissions accordingly.</li>
+      <li><b>The operator</b> — has technical access to the database and logs, and will only look when necessary to fix a problem or respond to a request.</li>
+      <li><b>Discord</b> — everything travels over Discord's platform and is subject to <a href="https://discord.com/privacy" target="_blank" rel="noopener">Discord's own privacy policy</a>.</li>
+      <li><b>Nobody else.</b> No third-party processors, no analytics services, no sale, no sharing — unless legally compelled, in which case only what's required.</li>
+    </ul>
+
+    <h3 id="security">8. Security</h3>
+    <p>The bot runs on a private machine with no inbound ports open to the internet; it connects out to Discord rather than accepting connections. Credentials are kept in a permission-restricted file outside the database, and backups exclude them. Access is limited to the operator.</p>
+    <p>No system is perfectly secure, and this is a hobby project rather than an audited service. Don't put anything in a ticket or application you'd be seriously harmed by exposing.</p>
+
+    <h3 id="rights">9. Your choices &amp; requests</h3>
+    <p>Depending on where you live you may have rights to access, correct or delete personal data about you. Regardless of location, you can ask for the following:</p>
+    <ul>
+      <li><b>See what's held about you</b> — a copy of your applications, tickets and moderation records in a given server.</li>
+      <li><b>Deletion</b> — removal of your applications, ticket transcripts, highlight-board entries or moderation cases.</li>
+      <li><b>Correction</b> — fixing something inaccurate.</li>
+    </ul>
+    <p>Start with the server's own staff, since they can delete applications, tickets and cases directly with the bot's commands, and they control the channels transcripts were posted to. If that isn't possible, contact the operator (below) — include the server and roughly when it happened. Requests are handled on a best-effort basis, usually within 30 days.</p>
+    <p>One limit worth stating plainly: moderation records exist so a community can enforce its rules, and a server may decline to delete a case about you while it remains relevant. Copies already posted into a server's log channel are that server's messages, and only its staff can remove them.</p>
+
+    <h3 id="children">10. Children</h3>
+    <p>Gemma is not directed at children. You must meet Discord's minimum age for your country to use Discord at all. If the operator learns that data from someone below that age has been stored, it will be deleted on request.</p>
+
+    <h3 id="website">11. This website</h3>
+    <p>These pages are static and hosted on Cloudflare Pages. There are no cookies, no tracking pixels and no analytics. Fonts are loaded from Google Fonts, which receives your IP address as part of serving them. The status page fetches a small JSON file describing the bot's health; it contains counts and feature names only, never user data.</p>
+
+    <h3 id="changes">12. Changes</h3>
+    <p>This policy will change as the bot does. The "last updated" date above always reflects the current version, and significant changes will be announced in the support server where practical.</p>
+
+    <h3 id="globallist">13. The global ban list</h3>
+    <p>This one deserves its own section, because it's the only place Gemma shares information about a person between servers that don't otherwise know each other.</p>
+    <h4>What it is</h4>
+    <p>A list of Discord account IDs, maintained by the bot's operator, of accounts confirmed to be automated (bots) or to friend-add members in order to solicit them, including NSFW solicitation. Each entry records the account ID, a written reason, a category, a link to the evidence, and who added it. Nothing else about the account is stored — no message history, no profile data.</p>
+    <h4>How it's used</h4>
+    <p>Servers choose to enrol. In an enrolled server, a listed account that joins is sent a direct message explaining the ban and giving an appeal link, and is then banned. Servers can override any individual entry, and can leave the list at any time.</p>
+    <h4>Appeals and removal</h4>
+    <p>Anyone listed can appeal at the <a href="https://discord.gg/ZmQG7xJgcR">appeal server</a>. A successful appeal removes the entry everywhere, and participating servers can undo the resulting bans with a single command. You may also request removal of your data by contacting the operator directly. Entries are kept while they remain relevant; pardoned entries keep a record of the pardon so servers can see the account was cleared.</p>
+    <h4>The limits of it</h4>
+    <p>This list is not used for interpersonal disputes, individual servers' moderation decisions, or anything a moderator simply disagreed with. Any server enrolling in it is trusting the operator's judgement; any server can stop at any time.</p>
+
+    <h3 id="contact">14. Contact</h3>
+    <p>For privacy questions or data requests, contact the operator through the support server or by direct message on Discord.</p>
+    <!-- EDIT ME: put your support server invite and/or contact email in the line below. -->
+    <p><b>Support:</b> <a href="index.html">see the website home page</a> for the current contact route.</p>
+  </section>
+</div>
+
+<footer class="site">
+  <div class="in">
+    <span>Gemma</span>
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="admins.html">Server owners</a>
+    <a href="status.html">Status</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a class="sp" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add to server</a>
+  </div>
+</footer>
+</body>
+</html>

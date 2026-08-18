@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma — status</title>
+<meta name="description" content="Live status for Gemma: services, shards and uptime.">
+<meta name="theme-color" content="#080f1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gemma.css">
+<style>
+/* ---- status-page only ---- */
+.banner{
+  display:flex;align-items:center;gap:18px;padding:24px 26px;border-radius:20px;
+  border:1px solid var(--line);background:linear-gradient(180deg,var(--card-2),var(--card));margin:26px 0 10px;
+}
+.banner .beacon{width:46px;height:46px;border-radius:50%;flex:none;position:relative;background:var(--lagoon)}
+.banner .beacon::after{content:"";position:absolute;inset:0;border-radius:50%;background:inherit;opacity:.55;animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(2.1);opacity:0}100%{opacity:0}}
+.banner h1{font-size:clamp(1.5rem,3vw,2.1rem);margin:0}
+.banner p{margin:4px 0 0;color:var(--foam-2);font-size:.95rem}
+.banner .meta{margin-left:auto;text-align:right;font-family:var(--mono);font-size:.74rem;color:var(--foam-3);white-space:nowrap}
+@media (max-width:640px){
+  .banner{flex-wrap:wrap;gap:14px;padding:20px}
+  .banner .beacon{width:34px;height:34px}
+  .banner .meta{margin-left:0;width:100%;text-align:left;display:flex;gap:12px}
+  .tiles{grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
+  .tile{padding:13px 14px}
+  .tile .n{font-size:1.5rem}
+}
+body[data-state="degraded"] .banner .beacon{background:var(--sand)}
+body[data-state="error"] .banner .beacon{background:var(--danger)}
+body[data-state="unknown"] .banner .beacon{background:var(--foam-3);animation:none}
+body[data-state="unknown"] .banner .beacon::after{display:none}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:18px 0 8px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.tile .n{font-family:var(--display);font-size:1.9rem;line-height:1;font-variation-settings:"SOFT" 40}
+.tile .l{color:var(--foam-3);font-size:.8rem;margin-top:6px;letter-spacing:.02em}
+
+.rows{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:14px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--card)}
+.row:last-child{border-bottom:0}
+.row .nm{font-weight:500}
+.row .st{margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.76rem;color:var(--foam-2)}
+.led{width:9px;height:9px;border-radius:50%;background:var(--lagoon);flex:none;box-shadow:0 0 0 3px rgba(87,217,200,.14)}
+.led.warn,.led.is-warn{background:var(--sand);box-shadow:0 0 0 3px rgba(255,201,120,.14)}
+.legend .led{width:9px;height:9px;padding:0;border:0;background-clip:padding-box}
+.led.bad{background:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,.14)}
+.led.off{background:var(--foam-3);box-shadow:none}
+
+.shards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:14px}
+.shard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden}
+.shard h4{font-size:1.02rem;margin:0 0 10px;display:flex;align-items:center;gap:9px}
+.shard dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:.85rem}
+.shard dt{font-family:var(--mono);font-size:.72rem;color:var(--foam-3)}
+.shard dd{margin:0;color:var(--foam-2);text-align:right}
+.shard.planned{border-style:dashed;opacity:.62}
+.shard.planned .tagline{font-size:.8rem;color:var(--foam-3)}
+.bars{display:flex;gap:3px;margin-top:12px}
+.bars i{flex:1;height:20px;border-radius:3px;background:var(--lagoon);opacity:.75}
+.bars i.dim{background:var(--foam-3);opacity:.25}
+
+.stale{display:none;margin-top:14px}
+body[data-stale="1"] .stale{display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;color:var(--foam-3);font-size:.82rem}
+.legend span{display:flex;align-items:center;gap:7px}
+</style>
+</head>
+<body data-state="unknown">
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="index.html"><span class="mark">G<img src="pfp.jpg" alt="" onerror="this.remove()"></span>Gemma</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="members.html">For members</a>
+      <a href="admins.html">For server owners</a>
+      <a class="on" href="status.html">Status</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+
+  <div class="banner">
+    <div class="beacon"></div>
+    <div>
+      <h1 id="headline">Checking status…</h1>
+      <p id="subline">Fetching the latest report.</p>
+    </div>
+    <div class="meta">
+      <div id="updated">—</div>
+      <div id="version"></div>
+    </div>
+  </div>
+
+  <div class="warn stale" id="staleNote"><b>This report is old.</b> The page can still be read, but the numbers below were last refreshed a while ago — the bot may be restarting or the feed may be unreachable.</div>
+
+  <div class="tiles">
+    <div class="tile"><div class="n" id="tServices">—</div><div class="l">services online</div></div>
+    <div class="tile"><div class="n" id="tShards">—</div><div class="l">shards online</div></div>
+    <div class="tile"><div class="n" id="tPing">—</div><div class="l">gateway latency</div></div>
+    <div class="tile"><div class="n" id="tUptime">—</div><div class="l">uptime</div></div>
+    <div class="tile"><div class="n" id="tGuilds">—</div><div class="l">servers</div></div>
+  </div>
+
+  <section>
+    <div class="eyebrow">Shards</div>
+    <h2>Gateway connections</h2>
+    <p class="lede">Each shard is one connection to Discord. Extra shards get added as the bot grows; the dashed cards are reserved and not deployed yet.</p>
+    <div class="shards" id="shards"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Services</div>
+    <h2>Features</h2>
+    <p class="lede">Every feature runs independently — one can fail without taking the others with it.</p>
+    <div class="rows" id="services"></div>
+    <div class="legend">
+      <span><i class="led"></i> operational</span>
+      <span><i class="led is-warn"></i> degraded</span>
+      <span><i class="led bad"></i> failed</span>
+      <span><i class="led off"></i> disabled / not deployed</span>
+    </div>
+  </section>
+</div>
+
+<footer class="site">
+  <div class="in">
+    <span>Gemma</span>
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="admins.html">Server owners</a>
+    <a href="status.html">Status</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a class="sp" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add to server</a>
+  </div>
+</footer>
+
+<script>
+/* ────────────────────────────────────────────────────────────────
+   EDIT THIS: where the status JSON lives.
+   • same folder as this page:  "status.json"
+   • live endpoint via tunnel:  "https://status.yourdomain.com/status.json"
+   ──────────────────────────────────────────────────────────────── */
+var STATUS_URL = "status.json";
+var REFRESH_MS = 15000;
+var STALE_AFTER_MS = 120000;   /* older than this → show the stale banner */
+
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+
+  function human(seconds){
+    if(seconds == null) return "—";
+    var d = Math.floor(seconds/86400), h = Math.floor(seconds%86400/3600), m = Math.floor(seconds%3600/60);
+    if(d) return d + "d " + h + "h";
+    if(h) return h + "h " + m + "m";
+    return m + "m";
+  }
+  function ago(iso){
+    if(!iso) return "—";
+    var diff = (Date.now() - new Date(iso).getTime())/1000;
+    if(diff < 60) return Math.max(0,Math.round(diff)) + "s ago";
+    if(diff < 3600) return Math.round(diff/60) + "m ago";
+    return Math.round(diff/3600) + "h ago";
+  }
+  function ledClass(status){
+    return status === "online" ? "" : status === "degraded" ? " warn" : status === "error" ? " bad" : " off";
+  }
+
+  function renderShards(data){
+    var wrap = $("shards"); wrap.innerHTML = "";
+    var live = {}, list = (data.shards && data.shards.list) || [];
+    list.forEach(function(s){ live[s.id] = s; });
+    var planned = Math.max((data.shards && data.shards.planned) || 1, list.length);
+    for(var i = 0; i < planned; i++){
+      var s = live[i], card = document.createElement("div");
+      card.className = "shard" + (s ? "" : " planned");
+      if(s){
+        var bars = "";
+        for(var b = 0; b < 12; b++) bars += "<i></i>";
+        card.innerHTML =
+          '<h4><i class="led' + ledClass(s.status) + '"></i> Shard ' + i + '</h4>' +
+          '<dl><dt>status</dt><dd>' + s.status + '</dd>' +
+          '<dt>latency</dt><dd>' + (s.latency_ms == null ? "—" : s.latency_ms + " ms") + '</dd>' +
+          '<dt>servers</dt><dd>' + (s.guilds == null ? "—" : s.guilds) + '</dd></dl>' +
+          '<div class="bars">' + bars + '</div>';
+      } else {
+        var dim = "";
+        for(var k = 0; k < 12; k++) dim += '<i class="dim"></i>';
+        card.innerHTML =
+          '<h4><i class="led off"></i> Shard ' + i + '</h4>' +
+          '<div class="tagline">Reserved — not deployed yet.</div>' +
+          '<dl><dt>status</dt><dd>planned</dd><dt>latency</dt><dd>—</dd><dt>servers</dt><dd>—</dd></dl>' +
+          '<div class="bars">' + dim + '</div>';
+      }
+      wrap.appendChild(card);
+    }
+  }
+
+  function renderServices(data){
+    var wrap = $("services"); wrap.innerHTML = "";
+    (data.services || []).forEach(function(svc){
+      var label = svc.status === "online" ? "operational"
+                : svc.status === "error" ? "failed"
+                : svc.status === "disabled" ? "disabled" : "not deployed";
+      var row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = '<span class="nm">' + svc.name + '</span><span class="st">' + label + '<i class="led' + ledClass(svc.status) + '"></i></span>';
+      wrap.appendChild(row);
+    });
+  }
+
+  function paint(data){
+    document.body.setAttribute("data-state", data.state || "unknown");
+    var headline = data.state === "operational" ? "All systems operational"
+                 : data.state === "degraded" ? "Partially degraded"
+                 : data.state === "error" ? "Something needs attention"
+                 : "Status unknown";
+    $("headline").textContent = headline;
+    var counts = data.counts || {};
+    $("subline").textContent = (counts.online || 0) + " of " + (counts.total || 0) + " services online · "
+      + ((data.shards && data.shards.online) || 0) + " of " + ((data.shards && data.shards.planned) || 1) + " shards connected";
+    $("updated").textContent = "updated " + ago(data.generated_at);
+    $("version").textContent = data.version ? "v" + data.version : "";
+    var fv = document.querySelector("footer.site .in span"); if(fv) fv.textContent = "Gemma" + (data.version ? " · v" + data.version : "");
+
+    $("tServices").textContent = (counts.online || 0) + "/" + (counts.total || 0);
+    $("tShards").textContent = ((data.shards && data.shards.online) || 0) + "/" + ((data.shards && data.shards.planned) || 1);
+    var list = (data.shards && data.shards.list) || [];
+    var pings = list.map(function(s){ return s.latency_ms; }).filter(function(v){ return v != null; });
+    $("tPing").textContent = pings.length ? Math.round(pings.reduce(function(a,b){return a+b;},0)/pings.length) + " ms" : "—";
+    $("tUptime").textContent = human(data.uptime_seconds);
+    $("tGuilds").textContent = data.guilds == null ? "—" : data.guilds;
+
+    var stale = data.generated_at && (Date.now() - new Date(data.generated_at).getTime() > STALE_AFTER_MS);
+    document.body.setAttribute("data-stale", stale ? "1" : "0");
+
+    renderShards(data);
+    renderServices(data);
+  }
+
+  function unreachable(){
+    document.body.setAttribute("data-state", "unknown");
+    document.body.setAttribute("data-stale", "1");
+    $("headline").textContent = "Can't reach the status feed";
+    $("subline").textContent = "The bot may be restarting, or the feed is temporarily unavailable. Retrying automatically.";
+    $("updated").textContent = "last try " + new Date().toLocaleTimeString();
+  }
+
+  function load(){
+    var url = STATUS_URL + (STATUS_URL.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now();
+    fetch(url, {cache: "no-store"})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(paint)
+      .catch(unreachable);
+  }
+
+  load();
+  setInterval(load, REFRESH_MS);
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) load(); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma — guide for members</title>
+<meta name="description" content="How to use Gemma as a member: applying for staff, opening a ticket, getting roles from a reaction menu, and the skullboard.">
+<meta name="theme-color" content="#080f1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gemma.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="index.html"><span class="mark">G<img src="pfp.jpg" alt="" onerror="this.remove()"></span>Gemma</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a class="on" href="members.html">For members</a>
+      <a href="admins.html">For server owners</a>
+      <a href="status.html">Status</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs">
+  <aside class="side">
+    <div class="switch" style="margin-bottom:14px">
+      <a class="on" href="members.html">Members</a>
+      <a href="admins.html">Owners</a>
+    </div>
+    <style>.side .switch{width:100%;justify-content:center}.side .switch a{flex:1;text-align:center;padding:6px 8px}</style>
+    <input class="search" id="search" type="search" placeholder="Search commands…" aria-label="Search commands">
+    <nav class="sidenav" id="nav">
+      <div class="grp">Basics</div>
+      <a href="#start">What is Gemma?</a>
+      <a href="#commands">Commands you can use</a>
+      <div class="grp">Doing things</div>
+      <a href="#apply">Applying for staff</a>
+      <a href="#tickets">Opening a ticket</a>
+      <a href="#roles">Getting roles</a>
+      <a href="#voice">Your own voice channel</a>
+      <a href="#skullboard">The skullboard</a>
+      <a href="#other">Welcomes &amp; autoresponses</a>
+      <div class="grp">Help</div>
+      <a href="#protection">Jail, spam &amp; raids</a>
+      <a href="#gban">Global ban list</a>
+      <a href="#faq">Common questions</a>
+      <a href="#privacy">What she remembers</a>
+      <a href="#legal">Terms &amp; privacy</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="start" style="padding-top:26px">
+      <div class="eyebrow">For members</div>
+      <h2>What is Gemma?</h2>
+      <p class="lede">Gemma is the bot running quietly in the background of this server. She greets people, hands out roles, takes staff applications, opens support tickets, and keeps spam and raids off the place. Most of that happens without you doing anything. This page covers the parts you can actually use.</p>
+      <div class="note"><b>Every server is different.</b> Server owners choose which features to switch on, so some of the commands below may not exist where you are. If a command doesn't appear when you type <code>/</code>, that feature simply isn't enabled.</div>
+    </section>
+
+    <section id="commands">
+      <div class="eyebrow">Reference</div>
+      <h2>Commands you can use</h2>
+      <p class="lede">Type <code>/</code> in any channel and Discord will show you what's available. These are the ones open to everyone.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Where</th></tr></thead><tbody>
+        <tr data-cmd><td>/apply <span class="opt">[application]</span></td><td>Start a staff application. Leave the option empty to pick from a list of whatever's open.</td><td><span class="who any">Anywhere</span></td></tr>
+        <tr data-cmd><td>/ticket open <span class="opt">[type]</span></td><td>Open a private support channel with the staff team.</td><td><span class="who any">Anywhere</span></td></tr>
+        <tr data-cmd><td>/ticket close <span class="opt">[reason]</span></td><td>Close your own ticket when you're done.</td><td><span class="who staff">Inside your ticket</span></td></tr>
+        <tr data-cmd><td>/voicemaster lock · unlock · hide · reveal · rename · limit · permit · reject · transfer · claim · info</td><td>Control a temporary voice channel you own (see below).</td><td><span class="who staff">In your voice channel</span></td></tr>
+        <tr data-cmd><td>/bump next</td><td>When the server can be bumped on Disboard again.</td><td><span class="who any">Anywhere</span></td></tr>
+        <tr data-cmd><td>/ping</td><td>Check the bot is awake and how fast she's responding.</td><td><span class="who any">Anywhere</span></td></tr>
+        <tr data-cmd><td>/status</td><td>Uptime and whether anything is currently broken.</td><td><span class="who any">Anywhere</span></td></tr>
+        <tr data-cmd><td>/about</td><td>What she is, and a link back to these docs.</td><td><span class="who any">Anywhere</span></td></tr>
+      </tbody></table>
+      <p>Replies to these are usually <b>ephemeral</b> — only you see them, and they vanish when you dismiss them. Nobody in chat sees you poking around.</p>
+    </section>
+
+    <section id="apply">
+      <div class="eyebrow">Doing things</div>
+      <h2>Applying for staff</h2>
+      <p class="lede">If the server takes applications there's usually a panel with a dropdown. Pick one from it, or run <code>/apply</code>. Same thing either way.</p>
+      <ol class="steps">
+        <li><h3>Pick what you're applying for</h3><p>Moderator, admin, whatever the server has set up. Anything marked closed isn't taking applications right now.</p></li>
+        <li><h3>Answer the questions</h3><p>Typed questions come as a form (a few at a time), multiple-choice ones as a dropdown. Only you can see any of it. You can cancel at any point and nothing is saved.</p></li>
+        <li><h3>Check your answers</h3><p>At the end you get the whole thing back to read over. <b>Start over</b> re-does it; <b>Submit</b> sends it.</p></li>
+        <li><h3>Wait for a DM</h3><p>Staff review it and you'll get a message with the outcome — plus any note they leave. If your DMs are closed you won't get it, so consider opening DMs from server members while you wait.</p></li>
+      </ol>
+      <div class="note"><b>One at a time.</b> While an application is pending you can't send another for the same role. If you're turned down, some servers set a waiting period before you can re-apply — Gemma will tell you exactly when you're eligible again.</div>
+    </section>
+
+    <section id="tickets">
+      <div class="eyebrow">Doing things</div>
+      <h2>Opening a ticket</h2>
+      <p class="lede">A ticket is a private channel between you and the staff team. Use it for anything you'd rather not say in public: reporting someone, appealing something, or asking a question quietly.</p>
+      <p>Press the button on the server's ticket panel, or run <code>/ticket open</code>. A new channel appears and you'll be pinged in it. Say what you need; someone will pick it up.</p>
+      <h3>While it's open</h3>
+      <p>Only you, the staff team and Gemma can see the channel. A staff member may <b>claim</b> it (so two people don't answer at once) or bring in someone else who can help. Attachments and screenshots work normally.</p>
+      <h3>When it's done</h3>
+      <p>Either you or staff can close it with the <b>Close</b> button or <code>/ticket close</code>. The channel disappears about ten seconds later, staff keep a transcript for their records, and you get a DM confirming it closed.</p>
+      <div class="warn"><b>Save anything you need before closing.</b> The channel is deleted, not archived — if there's a link or file in there you want, grab it first.</div>
+    </section>
+
+    <section id="roles">
+      <div class="eyebrow">Doing things</div>
+      <h2>Getting roles</h2>
+      <p class="lede">Most servers post a message listing roles with an emoji next to each one. React with the emoji to get the role.</p>
+      <p>Taking your reaction off removes the role again. Some menus work differently — your reaction disappears the instant you add it, and reacting a second time toggles the role back off. Either way the message itself tells you which.</p>
+      <h3>If nothing happens</h3>
+      <p>The usual reasons: the role sits above Gemma in the server's role list (a server owner has to fix that), the menu needs a role you don't have yet, or the server has blocked that menu for a role you do have. When it's one of the last two, Gemma removes your reaction and DMs you a one-line explanation — so check your DMs before assuming she's broken.</p>
+      <p>Some servers also lock certain role menus so you can only pick one option at a time, or so a choice can't be undone. That's deliberate, not a bug.</p>
+    </section>
+
+    <section id="voice">
+      <div class="eyebrow">Doing things</div>
+      <h2>Your own voice channel</h2>
+      <p class="lede">If the server has a voice channel called something like <b>➕ Join to Create</b>, join it. Gemma makes a channel just for you and moves you in.</p>
+      <p>You own it while you're there: lock it so only people you permit can join, hide it, rename it, cap how many people fit, or kick someone out. Use the buttons in the <b>#interface</b> channel or the <code>/voicemaster</code> commands — either way they act on the channel you're currently in. Hand it to a friend with <b>transfer</b>; if the owner leaves, anyone inside can <b>claim</b> it.</p>
+      <p>When the last person leaves, the channel disappears. Nothing to clean up.</p>
+    </section>
+
+    <section id="skullboard">
+      <div class="eyebrow">Doing things</div>
+      <h2>The skullboard ☠️</h2>
+      <p class="lede">A hall of fame for messages that deserve it. React to a message with ☠️ and if enough people agree, it gets reposted in the skullboard channel with a jump link back to the original.</p>
+      <div class="dmsg">
+        <div class="hdr"><div class="av"></div><div><span class="nm">Gemma<span class="bt">BOT</span></span><span class="ts">Today at 2:14 AM</span></div></div>
+        <div style="margin:8px 0 0 48px;font-family:var(--mono);font-size:.85rem;color:#dbdee1">☠️ <b>7</b> | #general</div>
+        <div class="embed one">
+          <div><div class="t">someone said something unforgivable</div><div class="d">…and now it lives here forever.</div></div>
+          <div class="f">↗ Jump to message</div>
+        </div>
+      </div>
+      <p>How many skulls it takes is up to the server (five is common). The count on the board updates as people add and remove reactions. Whether your own skull counts on your own message is also a server setting — some allow it, some don't.</p>
+    </section>
+
+    <section id="other">
+      <div class="eyebrow">Doing things</div>
+      <h2>Welcomes &amp; autoresponses</h2>
+      <p class="lede">Two things Gemma does at you rather than for you.</p>
+      <h3>Welcome messages</h3>
+      <p>When you joined, that greeting with your avatar and the member count was her. Nothing for you to do — but if you'd rather not be pinged in one, that's a conversation for the server's mods, since it's their template.</p>
+      <h3>Autoresponses</h3>
+      <p>If you say something that matches a phrase the server has set up, she'll answer automatically — usually FAQ answers, rules links or a joke someone thought was funny. She never replies to bots, and there's a cooldown so a trigger can't be spammed.</p>
+    </section>
+
+    <section id="protection">
+      <div class="eyebrow">Help</div>
+      <h2>Jail, spam &amp; raids</h2>
+      <p class="lede">A few automatic things you might bump into, and what they mean.</p>
+      <h3>Anti-spam</h3>
+      <p>Send a lot of messages very fast, the same thing over and over, a message that's just one chunk repeated, or a pile of pings, and Gemma deletes them and may give you a short timeout. She'll say why in a note that disappears after a few seconds, and repeat offences within an hour get longer timeouts. Ordinary enthusiasm — "lmaoooo", a few messages in a row — is fine.</p>
+      <h3>Jail</h3>
+      <p>Staff can jail someone instead of banning them. Your roles are removed, and the only channel you can see is <b>#jail</b>, where staff will talk to you. Leaving and rejoining doesn't get you out. When you're released, your roles come back exactly as they were. You get a DM at both ends.</p>
+      <h3>Anti-raid</h3>
+      <p>If a lot of accounts join at once, or the server is set to be picky about brand-new accounts or ones with no avatar, you might be kicked or timed out on joining. It isn't personal — it's automatic. Wait a while and try again, or contact a staff member through another route.</p>
+    </section>
+
+    <section id="gban">
+      <div class="eyebrow">Help</div>
+      <h2>Global ban list</h2>
+      <p class="lede">Some servers using Gemma opt into a shared list of accounts confirmed to be bots, or to friend-add people in order to solicit them. If your account is on it, joining one of those servers gets you removed automatically, and you'll get a DM explaining why.</p>
+      <h3>If you think you're on it by mistake</h3>
+      <p>The DM includes an appeal link, and it's here too: <a href="https://discord.gg/ZmQG7xJgcR">the appeal server</a>. Bring your account ID and anything showing you're a real person. A successful appeal clears you everywhere at once, not server by server.</p>
+      <h3>What it isn't</h3>
+      <p>It isn't for arguments, bans from individual servers, or anything a moderator disagreed with you about — those stay local to that server. The list only covers automated accounts and solicitation accounts, and every entry has evidence behind it.</p>
+      <h3>Linked servers</h3>
+      <p>Separately, a person who runs several servers can link them so that a ban in one applies to all of them. If that happens you get a single DM naming the servers involved. Appeals for that go to that server's own staff, not to the appeal server above.</p>
+    </section>
+
+    <section id="faq">
+      <div class="eyebrow">Help</div>
+      <h2>Common questions</h2>
+      <dl class="faq">
+        <dt>I reacted for a role and nothing happened.</dt>
+        <dd>Check your DMs first — if you weren't allowed, she'll have told you why. Otherwise it's almost always the role being positioned above Gemma in the server settings, which only a server owner can fix. Ask a mod to run <code>/rolemenu view</code>; it flags exactly this.</dd>
+
+        <dt>Can I edit my application after submitting?</dt>
+        <dd>No. Ask staff to deny it and re-apply, or explain the correction in a ticket. Before submitting, <b>Start over</b> lets you redo the whole thing.</dd>
+
+        <dt>Who can see what I write in a ticket?</dt>
+        <dd>You, the server's support role, anyone staff explicitly adds, and Gemma. When the ticket closes, a transcript of it is saved to a staff-only channel — so treat it as "private from other members", not "private from staff".</dd>
+
+        <dt>Gemma DMed me — is that real?</dt>
+        <dd>She DMs about applications, ticket closures and role menu problems only. She'll never ask for your password, a login code, or a link to anything. If a "Gemma" DM asks for any of that, it isn't her — report it.</dd>
+
+        <dt>Why did she ignore my command?</dt>
+        <dd>Either that feature isn't enabled, or the server has restricted that command through Discord's own integration settings. <code>/ping</code> is a quick way to check she's alive at all.</dd>
+
+        <dt>Her status says "Error! check logs!"</dt>
+        <dd>Something needs attention on the bot's side. Some things may still work fine — the server's owner gets notified automatically, so no need to report it unless it lingers.</dd>
+
+        <dt>My channel got made but the buttons say I'm not the owner.</dt>
+        <dd>The buttons act on the voice channel you're <i>currently in</i>. Join the channel first, then press. If the owner left, <b>claim</b> makes it yours.</dd>
+
+        <dt>Gemma DMed me about a warning / timeout / ban.</dt>
+        <dd>That's the server's moderators using her to act — she just delivers the message and the reason. Appeal to the server's staff, not to the bot.</dd>
+
+        <dt>I got banned by a channel I posted in.</dt>
+        <dd>Some servers run a trap channel for spam bots, clearly labelled as one, where posting removes you automatically. If that was you and you're a real person, appeal to the server's staff — Gemma just enforces what they configured.</dd>
+      </dl>
+    </section>
+
+    <section id="privacy">
+      <div class="eyebrow">Help</div>
+      <h2>What she remembers</h2>
+      <p class="lede">Short version: what you send her on purpose, and what your server configures. Not your general chat.</p>
+      <dl>
+        <dt>Applications</dt><dd>Your answers, who you are, and the accept/deny decision — kept so staff can look back at them.</dd>
+        <dt>Tickets</dt><dd>A transcript of the ticket channel, saved to a staff channel when it closes.</dd>
+        <dt>Roles &amp; settings</dt><dd>Which emoji maps to which role, channel choices, and so on — server configuration, not personal data.</dd>
+        <dt>Skullboard</dt><dd>The message that made the board and how many skulls it has.</dd>
+        <dt>Everyday messages</dt><dd>Read in the moment to check for autoresponder triggers, then gone. Nothing is stored.</dd>
+      </dl>
+      <p>If you want something removed, ask the server's owners — it's their server and their data. They can delete applications, tickets and skullboard entries.</p>
+    </section>
+
+    <section id="legal">
+      <div class="eyebrow">Help</div>
+      <h2>Terms &amp; privacy</h2>
+      <p class="lede">The full versions, if you want them. The <a href="terms.html">Terms of Service</a> cover what you agree to by using her. The <a href="privacy.html">Privacy Policy</a> covers what's stored, for how long, and how to have it deleted.</p>
+      <p>Both are written to be readable rather than impressive. If something in them doesn't match what you're seeing, tell your server's staff — that's usually a configuration question, not a policy one.</p>
+    </section>
+  </main>
+</div>
+
+<footer class="site">
+  <div class="in">
+    <span>Gemma</span>
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="admins.html">Server owners</a>
+    <a href="status.html">Status</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a class="sp" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add to server</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var q=document.getElementById('search');
+  if(q){q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase();
+    document.querySelectorAll('tr[data-cmd]').forEach(function(tr){tr.classList.toggle('hide',v&&tr.textContent.toLowerCase().indexOf(v)===-1);});
+  });}
+  var links=[].slice.call(document.querySelectorAll('#nav a')),secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function onScroll(){var y=window.scrollY+140,on=0;secs.forEach(function(s,k){if(s&&s.offsetTop<=y)on=k;});links.forEach(function(a,k){a.classList.toggle('on',k===on);});}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+</body>
+</html>

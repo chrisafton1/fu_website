@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma — guide for server owners</title>
+<meta name="description" content="Set up Gemma: moderation, anti-nuke, anti-raid, anti-spam, jail, logging, cross-server bans, applications, tickets, roles and voice channels. Every command and option.">
+<meta name="theme-color" content="#080f1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gemma.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="index.html"><span class="mark">G<img src="pfp.jpg" alt="" onerror="this.remove()"></span>Gemma</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="members.html">For members</a>
+      <a class="on" href="admins.html">For server owners</a>
+      <a href="status.html">Status</a>
+      <a class="btn primary" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add to server</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs">
+  <aside class="side">
+    <div class="switch" style="margin-bottom:14px">
+      <a href="members.html">Members</a>
+      <a class="on" href="admins.html">Owners</a>
+    </div>
+    <input class="search" id="search" type="search" placeholder="Search commands… (e.g. skull)" aria-label="Search commands">
+    <nav class="sidenav" id="nav">
+      <div class="grp">Start here</div>
+      <a href="#invite">Add &amp; permissions</a>
+      <a href="#firstrun">Your first ten minutes</a>
+      <a href="#setup">/setup</a>
+      <a href="#prefix">Text prefix &amp; aliases</a>
+      <div class="grp">Protection</div>
+      <a href="#moderation">Moderation</a>
+      <a href="#staff">Staff roles &amp; jail</a>
+      <a href="#antinuke">Anti-nuke</a>
+      <a href="#antiraid">Anti-raid</a>
+      <a href="#antispam">Anti-spam</a>
+      <a href="#honeypot">Honeypot</a>
+      <a href="#logging">Logging</a>
+      <div class="grp">Cross-server</div>
+      <a href="#network">Ban network</a>
+      <a href="#gban">Global ban list</a>
+      <div class="grp">Community</div>
+      <a href="#welcome">Welcome messages</a>
+      <a href="#applications">Applications</a>
+      <a href="#tickets">Tickets</a>
+      <a href="#reactionroles">Reaction roles</a>
+      <a href="#voice">Voice channels</a>
+      <a href="#skullboard">Skullboard</a>
+      <div class="grp">Everyday</div>
+      <a href="#autoresponder">Autoresponders</a>
+      <a href="#autorole">Autorole</a>
+      <a href="#bump">Bump reminders</a>
+      <div class="grp">Reference</div>
+      <a href="#variables">Variables</a>
+      <a href="#permissions">Who can do what</a>
+      <a href="#status">Status commands</a>
+      <a href="#trouble">Troubleshooting</a>
+      <a href="#legal">Terms &amp; privacy</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="invite" style="padding-top:26px">
+      <div class="eyebrow">For server owners</div>
+      <h2>Add Gemma &amp; give her room to work</h2>
+      <p class="lede">One invite, then two things to check. Neither takes a minute, and skipping the second causes most of the "it doesn't work" reports I get.</p>
+      <ol class="steps">
+        <li>
+          <h3>Invite her</h3>
+          <p>Use the <b>Add to server</b> button above. The link asks for <b>Administrator</b>, which covers everything eighteen features could need: posting, embeds, reactions, managing roles and channels, kicking, banning, timeouts, reading the audit log so logs can name who did what, and the voice permissions for temporary channels.</p>
+          <p>If you'd rather not grant Administrator, you don't have to. Invite her anyway and then give her a role with exactly these: View Channels, Send Messages, Embed Links, Attach Files, Read Message History, Add Reactions, Use External Emojis, Manage Messages, Manage Roles, Manage Channels, Kick Members, Ban Members, Timeout Members, View Audit Log, Connect, Speak, Move Members. Features whose permissions are missing say so instead of failing quietly, so you can trim and see what breaks.</p>
+          <div class="warn" style="margin-top:14px"><b>Administrator is not a hierarchy override.</b> Gemma still cannot touch roles positioned above her own, so step 2 matters just as much either way.</div>
+        </li>
+        <li>
+          <h3>Move her role up</h3>
+          <p><b>Server Settings → Roles</b>, drag Gemma's role <b>above every role she'll hand out</b> — autorole, reaction role menus, all of it. Discord won't let any bot manage a role positioned above its own, and this is the single most common cause of "the reaction did nothing".</p>
+        </li>
+        <li>
+          <h3>Check she can see the channels</h3>
+          <p>If you use private categories, make sure she can view and post in the channels you're about to point her at. She'll tell you when she can't — every command that takes a channel checks first and refuses with the reason.</p>
+        </li>
+      </ol>
+      <div class="note"><b>Commands not showing up?</b> Press <kbd>Ctrl</kbd>+<kbd>R</kbd> in Discord. New slash commands are cached by the client and a reload is usually all it takes.</div>
+    </section>
+
+    <section id="firstrun">
+      <div class="eyebrow">Start here</div>
+      <h2>Your first ten minutes</h2>
+      <p class="lede">This order avoids backtracking. Everything is optional; do the features you want and ignore the rest.</p>
+      <ol class="steps">
+        <li><h3><code>/setup</code></h3><p>Set the <b>log channel</b> first (a staff-only channel — most features report there), then whatever else you're using: welcome channel, skullboard channel, autorole, tickets category and support role, applications review channel.</p></li>
+        <li><h3><code>/welcome test</code></h3><p>Fires a real welcome for you so you can see the default. Change it with <code>/welcome edit</code>.</p></li>
+        <li><h3><code>/application create name:Moderator</code></h3><p>Then add questions, <code>/application preview</code> to walk it yourself, and <code>/application panel</code> to post the picker.</p></li>
+        <li><h3><code>/ticket type create name:Support</code></h3><p>Then <code>/ticket panel</code> wherever members should press it.</p></li>
+        <li><h3><code>/rolemenu create</code></h3><p>Then <code>/rolemenu add</code> once per emoji → role pair.</p></li>
+        <li><h3><code>/staff add @Mods</code>, then the protection checks in <code>/setup</code></h3><p>Tell Gemma who your team is, then open <code>/setup</code>: <b>Jail</b>, <b>Anti-nuke</b>, <b>Anti-raid</b> and <b>Anti-spam</b> each show a status line and a one-click <b>Enable (default)</b> / <b>Build the jail</b> button. Defaults are tuned for set-and-forget.</p></li>
+        <li><h3><code>/logging setup #server-logs</code></h3><p>Every log category to one private channel. Split them later if you like.</p></li>
+        <li><h3><code>/honeypot create</code> — last</h3><p>Makes a clearly-labelled trap channel and arms it. Do this after everything else, and move the channel to the bottom of your list.</p></li>
+      </ol>
+    </section>
+
+    <section id="setup">
+      <div class="eyebrow">Feature</div>
+      <h2>/setup</h2>
+      <p class="lede">One interactive menu, only you can see it, listing every channel and role any enabled feature wants.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/setup</td><td>Opens the menu. Steps: log channel · staff roles · server logs channel · mod log · jail (status + build button) · anti-nuke, anti-raid, anti-spam (status + enable buttons, plus their log channels) · welcome channel · skullboard channel · autorole · honeypot channel · applications review + log channels · tickets category, support role and log channel · voice channels (status + create button) · bump reminder channel. Each step has <b>Clear</b> and <b>Back</b>; the menu has <b>Do it later</b>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>Nothing here is mandatory, and every value can also be set with that feature's own commands. Changes are posted to your log channel so your staff can see who changed what.</p>
+      <p><b>Status steps</b> — Jail, Anti-nuke, Anti-raid, Anti-spam and Voice channels — don't ask you to pick anything. They check whether the feature is healthy (✅ / ⚠️ shows in the overview), and if it isn't, one button fixes it: builds the jail, enables the protection in default mode, creates the voice channels.</p>
+    </section>
+
+    <section id="prefix">
+      <div class="eyebrow">Start here</div>
+      <h2>Text prefix &amp; aliases</h2>
+      <p class="lede">Every command in the Moderation section works two ways: as a slash command (<code>/ban</code>) and as a text command with your server's prefix, <code>,G</code> by default (<code>,G ban @user reason</code>). Text commands are faster for mods and let you attach screenshots straight to the message. Mentioning Gemma works as a prefix too.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/prefix set <span class="arg">new_prefix</span> · view · reset</td><td>Change the text prefix (1-8 characters, e.g. <code>!</code> or <code>g?</code>), see it, or go back to <code>,G</code>. Case doesn't matter — <code>,g ban</code> works.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/alias add <span class="arg">name command</span> <span class="opt">[preset]</span></td><td>Make a shortcut. <b>preset</b> is text tacked onto whatever you type — a ready-made reason, for instance. <code>/alias add name:spam command:ban preset:Spam bot</code> makes <code>,G spam @user</code> the same as <code>,G ban @user Spam bot</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/alias remove <span class="arg">name</span> · list</td><td>Delete a shortcut, or see them all.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>,G commands</td><td>Lists the text commands the person running it can use, with their usage.</td><td><span class="who any">Anyone</span></td></tr>
+      </tbody></table>
+      <p>Aliases only apply to text commands — slash commands can't be renamed. An alias can't shadow a real command, and whatever you type after the alias still goes through, so <code>,G spam @user was posting links</code> becomes <code>,G ban @user was posting links Spam bot</code>.</p>
+    </section>
+
+    <section id="staff">
+      <div class="eyebrow">Protection</div>
+      <h2>Staff roles &amp; jail</h2>
+      <p class="lede">The rest of the protection stack leans on these two. One tells Gemma who your team is. The other gives you somewhere to put someone while you sort it out.</p>
+      <h4>Staff roles</h4>
+      <p>Anyone with mod-level Discord permissions already counts as staff. <code>/staff add</code> extends that to roles that <i>don't</i> carry permissions — helpers, trial mods — so anti-spam, anti-raid, the honeypot and the jail never act on them, and so the jail channel is visible to them.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/staff add <span class="arg">role</span> · remove <span class="arg">role</span> · list</td><td>Manage the staff role list (also a step in <code>/setup</code>).</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <h4>Jail</h4>
+      <p>Jailing strips someone's roles, gives them a <b>Jailed</b> role that can see only <b>#jail</b> (which staff can also see), and remembers everything so <code>/jail release</code> puts it all back. If they leave and rejoin, the Jailed role is reapplied. Timed jails release themselves.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/jail setup</td><td>Create (or repair) the Jailed role and #jail, and hide every other channel from it. New channels are hidden automatically afterwards. The <b>Jail</b> step in <code>/setup</code> checks this and offers to build it.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/jail add <span class="arg">user</span> <span class="opt">[duration] [reason]</span></td><td>Jail someone — <code>30m</code>, <code>2h</code>, <code>1d</code>, or open-ended. They're DMed and #jail gets a note.</td><td><span class="who staff">Timeout Members</span></td></tr>
+        <tr data-cmd><td>/jail release <span class="arg">user</span> <span class="opt">[reason]</span></td><td>Let them out and restore the roles they had.</td><td><span class="who staff">Timeout Members</span></td></tr>
+        <tr data-cmd><td>/jail list</td><td>Who's in jail, by whom, until when.</td><td><span class="who staff">Timeout Members</span></td></tr>
+      </tbody></table>
+      <p>Guardrails: staff can't be jailed without being removed from the staff roles first; nobody above Gemma's role or above yours can be jailed. Anti-raid can use "jail" as its action once the jail exists.</p>
+    </section>
+
+    <section id="antinuke">
+      <div class="eyebrow">Protection</div>
+      <h2>Anti-nuke</h2>
+      <p class="lede">For the day an admin account gets compromised, or a rogue bot gets added. Mass bans, kicks, channel and role deletion, webhooks, emoji deletion, new bots, dangerous permission grants: all counted per person, and whoever crosses the line gets stopped.</p>
+      <div class="warn"><b>Only the server owner and anti-nuke admins can change these settings.</b> Not Manage Server, not Administrator. If an admin's account is taken over, the attacker can't just switch it off. Give trusted co-owners <code>/antinuke admin add</code>; give trusted bots <code>/antinuke whitelist add</code>.</div>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/antinuke enable <span class="opt">[mode]</span></td><td><b>default</b> (3 of most things in 60s; bots and dangerous perms trigger on the first), <b>strict</b> (first hit for nearly everything), or <b>custom</b> (keep your own thresholds). Also a one-click step in <code>/setup</code>.</td><td><span class="who owner">Owner / AN admin</span></td></tr>
+        <tr data-cmd><td>/antinuke set <span class="arg">module threshold seconds</span></td><td>Custom rule for one module, e.g. <code>ban 2 30</code>. Switches mode to custom.</td><td><span class="who owner">Owner / AN admin</span></td></tr>
+        <tr data-cmd><td>/antinuke module <span class="arg">module on|off</span></td><td>Turn a single module off (say, channel creation on a server that makes lots).</td><td><span class="who owner">Owner / AN admin</span></td></tr>
+        <tr data-cmd><td>/antinuke punishment <span class="arg">ban|kick|strip</span></td><td>What happens to whoever trips it. Default ban.</td><td><span class="who owner">Owner / AN admin</span></td></tr>
+        <tr data-cmd><td>/antinuke whitelist add|remove|list · admin add|remove|list</td><td>Never punish these users/bots · let these users configure anti-nuke.</td><td><span class="who owner">Owner / AN admin</span></td></tr>
+        <tr data-cmd><td>/antinuke log <span class="arg">channel</span> · disable · view</td><td>Where triggers are reported (also DMs the owner) · off · the full config.</td><td><span class="who owner">Owner / AN admin</span></td></tr>
+      </tbody></table>
+      <p>Modules: mass ban, mass kick, channel deletion, channel creation, role deletion, role creation, webhook creation, emoji deletion, bot added, dangerous permission grant (Administrator, Ban, Kick, Manage Server/Roles/Channels/Webhooks, Timeout, Mention Everyone), member prune. Bots added without being whitelisted are kicked on sight and the person who added them is counted. Gemma needs <b>View Audit Log</b> to know who did what — <code>/antinuke view</code> warns if she can't.</p>
+    </section>
+
+    <section id="antiraid">
+      <div class="eyebrow">Protection</div>
+      <h2>Anti-raid</h2>
+      <p class="lede">Join floods, throwaway accounts, and a lockdown switch for when it's already happening.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/antiraid enable <span class="opt">[mode]</span></td><td><b>default</b>: 10 joins in 10s → kick joiners for 10 minutes. <b>strict</b>: 5 in 10s → ban for 30 minutes, accounts under 7 days kicked, no-avatar accounts kicked. Also a one-click step in <code>/setup</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antiraid set joins <span class="arg">count seconds action</span> <span class="opt">[raid_minutes]</span></td><td>The flood rule. Action: kick, ban, timeout or jail.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antiraid set newaccounts <span class="arg">days</span> <span class="opt">[action]</span></td><td>Accounts younger than N days get the action (0 = off).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antiraid set noavatar <span class="arg">action|off</span></td><td>Accounts with no profile picture.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antiraid lockdown <span class="arg">on|off</span></td><td>Raise verification to the maximum (verified phone required) and remember the old level; <b>off</b> restores it. The owner is DMed with a nudge to use this when a raid is detected.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antiraid log <span class="arg">channel</span> · disable · view</td><td>Where detections go · off · the config, including whether raid mode is active right now.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>Staff and configured staff roles are exempt from every rule. "jail" as an action needs the jail built first; it falls back to kick otherwise.</p>
+    </section>
+
+    <section id="antispam">
+      <div class="eyebrow">Protection</div>
+      <h2>Anti-spam</h2>
+      <p class="lede">Catches the four things people actually do: too many messages too fast, the same message repeated, one message that's a chunk repeated over and over ("yousuckyousuckyousuck"), and mass mentions.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/antispam enable <span class="opt">[mode]</span></td><td><b>default</b>: 6 msgs/4s, 4 duplicates/20s, repetition on, 6 mentions, 10-minute timeout. <b>strict</b>: 4/4s, 3/30s, 4 mentions, 30-minute timeout. Also a one-click step in <code>/setup</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antispam set rate · duplicates · repetition · mentions</td><td>Tune each rule individually (switches mode to custom).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antispam punishment <span class="arg">minutes</span></td><td>Timeout after cleaning up. Doubles for repeat offenders within an hour, capped at a day. 0 = delete only.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antispam ignore channel|role add|remove · ignore list</td><td>Channels and roles it leaves alone (a memes channel, a trusted role).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/antispam log <span class="arg">channel</span> · disable · view</td><td>Where cleanups and timeouts are reported · off · the config.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>When it fires it deletes the offending messages (and that person's other messages from the last 30 seconds in that channel), applies the timeout, drops a short note in the channel that self-deletes, and logs it with a sample. Staff are never touched. Elongated words like "lmaoooo" are deliberately not treated as spam.</p>
+    </section>
+
+    <section id="logging">
+      <div class="eyebrow">Protection</div>
+      <h2>Logging</h2>
+      <p class="lede">Detailed logs of everything that happens, with the <i>who</i> filled in from the audit log. Who deleted that message. Who banned them. Who quietly changed a role's permissions.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/logging setup <span class="arg">channel</span></td><td>Everything to one channel — the fast start. Also the "Server logs" step in <code>/setup</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/logging set <span class="arg">category channel</span></td><td>Send one category somewhere specific: messages · members · moderation · channels · roles · voice · invites · server.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/logging disable <span class="arg">category|all</span></td><td>Turn a category (or everything) off.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/logging ignore channel add|remove <span class="arg">channel</span></td><td>Never log what happens in a channel (a busy bot channel, say).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/logging bots <span class="arg">on|off</span></td><td>Log actions by bots too. Off by default — bots are noisy.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/logging view</td><td>Where each category goes.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>What each category covers: <b>messages</b> — deleted (content, author, who deleted it), edited (before/after), bulk deletes with a sample; <b>members</b> — joins with account age and the invite used, leaves with the roles they had, nickname and role changes with who did it, username/avatar changes; <b>moderation</b> — bans, unbans, kicks and timeouts with reason and responsible moderator; <b>channels</b> and <b>roles</b> — created, deleted, renamed, permission diffs; <b>voice</b> — join, leave, move (and who moved them), server mute/deafen; <b>invites</b> — created, deleted, and which one a joiner used; <b>server</b> — name, icon, owner, verification level, emoji changes.</p>
+      <p>Two limits worth knowing: message content for deletions is only available for messages Gemma saw while running (she keeps the last few thousand), and every "who did it" needs <b>View Audit Log</b> — without it you get the event but not the actor.</p>
+    </section>
+
+    <section id="network">
+      <div class="eyebrow">Cross-server</div>
+      <h2>Ban network</h2>
+      <p class="lede">Run several servers? Link them and a ban in one lands in all of them. <b>You must own every server you link.</b> Gemma verifies it, so nobody can attach your community to someone else's ban button.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/network create <span class="opt">[name]</span></td><td>Starts a network and gives you a code. Keep it private — it's for your other servers, not for sharing.</td><td><span class="who owner">Server owner</span></td></tr>
+        <tr data-cmd><td>/network join <span class="arg">code</span></td><td>Links this server. Refused unless the same person owns both servers.</td><td><span class="who owner">Server owner</span></td></tr>
+        <tr data-cmd><td>/network direction <span class="arg">send|receive|both</span></td><td><b>send</b> shares this server's bans but takes none. <b>receive</b> is the opposite. <b>both</b> is the default.</td><td><span class="who owner">Server owner</span></td></tr>
+        <tr data-cmd><td>/network dm-names <span class="arg">visited|all</span></td><td>Whether the ban DM names every linked server or only the ones that person was actually in. Default: only the ones they were in.</td><td><span class="who owner">Server owner</span></td></tr>
+        <tr data-cmd><td>/network info · leave</td><td>Who's linked and what's synced · unlink (bans already applied stay).</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p><b>Only manual moderator bans sync.</b> Honeypot, anti-raid and anti-nuke bans stay in the server that made them — one server's false positive shouldn't become everyone's. Unbans sync too, so lifting a ban anywhere lifts it everywhere.</p>
+      <p>The banned person gets <b>one</b> DM, not one per server: <i>"You have been banned from Server A and its linked servers Server B, Server C, and Server D."</i> The reason carries across as <i>"Network ban from Server A — [reason] (proof in Server A)"</i>, since evidence files stay in the server where they were uploaded.</p>
+    </section>
+
+    <section id="gban">
+      <div class="eyebrow">Cross-server</div>
+      <h2>Global ban list</h2>
+      <p class="lede">An opt-in list of confirmed automated accounts and accounts that friend-add members to solicit them. Curated by the bot owner, every entry with a reason and evidence. Your server can join it, override any entry, or leave at any time.</p>
+      <div class="note"><b>Two switches, and only one of them is the protection.</b> <b>Watch joins</b> is continuous — a listed account that joins gets a DM with the appeal link, then a ban. <b>Sweep</b> is a one-off pass over members already in your server. Enrolling turns watch on; sweeping is always something you choose to run.</div>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/gban enroll</td><td>Start using the list, watch-joins on. Also a one-click step in <code>/setup</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/gban watch <span class="arg">enabled</span></td><td>The continuous protection. Turning it off leaves you enrolled but unprotected, and Gemma says so.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/gban sweep · sweep-stop</td><td>Check everyone already here. Shows how many would be banned and warns about other anti-nuke bots <i>before</i> anything happens, then paces itself and can be stopped mid-run.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/gban lookup <span class="arg">user_id</span></td><td>Is this account listed, why, in what category, when, and is your server ignoring it?</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/gban ignore add <span class="arg">user_id reason</span> · remove · list</td><td>Allow an account here regardless of the list. Gemma then asks whether you think it's a false ban and, if so, points you at the appeal server.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/gban view · unenroll</td><td>Current settings · stop using the list. <b>Bans already applied stay</b> — unban individually if you want them back.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/gban unban-pardoned</td><td>Undo bans here for accounts that have since won an appeal.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <h4>Before you sweep</h4>
+      <p>A sweep bans several accounts in a row. If you run another protection bot with anti-nuke, it may see that and restrict Gemma — <b>whitelist her there first</b>. She paces herself deliberately (a couple of seconds between bans) to reduce the risk, tells you how long it'll take, and stops on command.</p>
+      <h4>What gets an account listed</h4>
+      <p>Automated/bot accounts, and accounts that immediately friend-add members to solicit them, including NSFW solicitation. Nothing else — this list is not for interpersonal disputes. Every entry needs evidence, and every listed account can appeal at the <a href="https://discord.gg/ZmQG7xJgcR">appeal server</a>; a successful appeal clears them everywhere.</p>
+      <p>Your own staff are never banned by the list, and neither is your server owner.</p>
+    </section>
+
+    <section id="moderation">
+      <div class="eyebrow">Protection</div>
+      <h2>Moderation</h2>
+      <p class="lede">Ban, kick, timeout, warn, purge. Every action becomes a numbered <b>case</b> in your mod log carrying the reason, the moderator, and whatever proof you attached.</p>
+      <div class="note"><b>Set the mod log first</b> (<code>/mod log #channel</code> or <code>/setup</code>) and make sure Gemma can attach files there. Proof screenshots are re-uploaded into that channel so they never expire; without it, cases still work but evidence has nowhere to live.</div>
+      <h4>Attaching proof</h4>
+      <p>With the text prefix, just attach screenshots to the command message: <code>,G ban @user spamming</code> + drag in the images. With slash commands, use the <b>proof</b> options (up to three per command; add more later with <code>/case proof</code>). Everything is copied to the mod log and linked from the case.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Needs</th></tr></thead><tbody>
+        <tr data-cmd><td>ban <span class="arg">user</span> <span class="opt">[reason] [proof…]</span></td><td>Ban and remove their last <b>7 days</b> of messages. DMs them the reason first. For someone not in the server, use <code>banid</code>.</td><td><span class="who staff">Ban Members</span></td></tr>
+        <tr data-cmd><td>banid <span class="arg">user_ids</span> <span class="opt">[reason] [proof…]</span></td><td>Ban by ID — works on people who have never been in the server ("hackban"). Takes several IDs at once (up to 20), so you can clear a raid list in one go. Aliases: <code>hackban</code>, <code>forceban</code>.</td><td><span class="who staff">Ban Members</span></td></tr>
+        <tr data-cmd><td>unban <span class="arg">user_id</span> <span class="opt">[reason]</span></td><td>Lift a ban by ID.</td><td><span class="who staff">Ban Members</span></td></tr>
+        <tr data-cmd><td>kick <span class="arg">user</span> <span class="opt">[reason] [proof…]</span></td><td>Kick, DM the reason first.</td><td><span class="who staff">Kick Members</span></td></tr>
+        <tr data-cmd><td>timeout <span class="arg">user duration</span> <span class="opt">[reason] [proof…]</span></td><td>Time out for <code>10m</code>, <code>2h</code>, <code>1d12h</code>, <code>1w</code> — up to 28 days.</td><td><span class="who staff">Timeout Members</span></td></tr>
+        <tr data-cmd><td>untimeout <span class="arg">user</span> <span class="opt">[reason]</span></td><td>Lift a timeout early.</td><td><span class="who staff">Timeout Members</span></td></tr>
+        <tr data-cmd><td>warn <span class="arg">user</span> <span class="opt">[reason] [proof…]</span></td><td>Log a warning and DM it. Nothing else happens — it's the paper trail.</td><td><span class="who staff">Timeout Members</span></td></tr>
+        <tr data-cmd><td>purge <span class="arg">amount</span> <span class="opt">[user]</span></td><td>Delete the last N messages here (1-100), optionally only one person's.</td><td><span class="who staff">Manage Messages</span></td></tr>
+        <tr data-cmd><td>case <span class="arg">number</span> · case reason · case proof · case delete</td><td>Look a case up, fix its reason, add evidence, or delete the record (Manage Server for delete).</td><td><span class="who staff">Timeout Members</span></td></tr>
+        <tr data-cmd><td>history <span class="arg">user</span></td><td>Everything on record for one person, newest first, with a summary line.</td><td><span class="who staff">Timeout Members</span></td></tr>
+        <tr data-cmd><td>/mod log <span class="arg">channel</span> · dm <span class="arg">enabled</span> · view</td><td>Where cases go, whether targets get a DM, and the current settings.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>All of these are shown as both <code>/ban</code> and <code>,G ban</code>. Safeguards that always apply: you can't act on yourself, the bot, the server owner, or anyone whose top role is at or above yours (or Gemma's). Every action goes in Discord's audit log with the case number, so it's traceable even outside Gemma.</p>
+      <p>Not here yet: anti-spam, anti-nuke, join gates, slowmode and lockdown. Basics first.</p>
+    </section>
+
+    <section id="voice">
+      <div class="eyebrow">Community</div>
+      <h2>Voice channels (join-to-create)</h2>
+      <p class="lede">A <b>➕ Join to Create</b> voice channel. Anyone who joins gets their own channel and is moved into it, then controls it from a button panel in <b>#interface</b> or with <code>/voicemaster</code>: lock, hide, rename, limit, kick. When the last person leaves it deletes itself.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/voicemaster setup <span class="opt">[owner_role]</span></td><td>Creates the category, the Join-to-Create channel and #interface with the control panel. <b>owner_role:True</b> also creates a "VC Owner" role, given to people while they own a channel, and makes #interface visible only to them. Also a step in <code>/setup</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/voicemaster template <span class="arg">text</span></td><td>Naming pattern for new channels — <code>{user.name}'s hangout</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/voicemaster lock · unlock · hide · reveal</td><td>Owner controls: only permitted people can join · anyone can · invisible to others · visible again.</td><td><span class="who any">Channel owner</span></td></tr>
+        <tr data-cmd><td>/voicemaster rename <span class="arg">name</span> · limit <span class="arg">n</span></td><td>Rename (Discord allows two per 10 minutes) · cap the number of people (0 = unlimited).</td><td><span class="who any">Channel owner</span></td></tr>
+        <tr data-cmd><td>/voicemaster permit <span class="arg">user</span> · reject <span class="arg">user</span> · transfer <span class="arg">user</span></td><td>Let someone into a locked channel · kick them out and keep them out · hand over ownership.</td><td><span class="who any">Channel owner</span></td></tr>
+        <tr data-cmd><td>/voicemaster claim · info</td><td>Take over a channel whose owner left · see its settings.</td><td><span class="who any">Anyone in the channel</span></td></tr>
+      </tbody></table>
+      <p>The #interface buttons do the same things and always act on the channel the clicker is currently in. Gemma needs Manage Channels and Move Members.</p>
+    </section>
+
+    <section id="welcome">
+      <div class="eyebrow">Community</div>
+      <h2>Welcome messages</h2>
+      <p class="lede">A greeting built from an embed you control. Here's the default:</p>
+      <div class="dmsg">
+        <div class="hdr"><div class="av"></div><div><span class="nm">Gemma<span class="bt">BOT</span></span><span class="ts">Today at 4:20 PM</span></div></div>
+        <div class="embed">
+          <div><div class="t">Welcome to Your Server 🏝️</div><div class="d">Hey @NewMember!
+
+Welcome to <b>Your Server</b>.
+We're glad you're here — go say hi and have fun!</div></div>
+          <div class="th"></div>
+          <div class="f">Member #114</div>
+        </div>
+      </div>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/welcome channel <span class="arg">channel</span></td><td>Where greetings are posted (turns the feature on).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/welcome edit</td><td>A form for the message text, embed title, description, footer and colour.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/welcome style <span class="opt">[color] [thumbnail] [image] [author] [author_icon] [timestamp]</span></td><td>Images and extras. Use <code>{user.avatar}</code> or <code>{guild.icon}</code>, any image URL, or <code>none</code> to remove.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/welcome json</td><td>Paste raw embed JSON — exports from the usual embed builders work, and variables still apply inside them.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/welcome preview · test</td><td>Render it privately, or send a real one to the welcome channel as if you'd just joined.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/welcome view</td><td>Current settings plus the JSON — copy it somewhere as a backup.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/welcome delete_after <span class="arg">seconds</span></td><td>Auto-delete greetings after N seconds (0 = keep them).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/welcome toggle <span class="arg">enabled</span> · reset · variables</td><td>Pause without losing your design, restore the default look, or list the variables.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <div class="note"><b>Line breaks:</b> type <code>\n</code> anywhere in the text and it becomes a real new line.</div>
+    </section>
+
+    <section id="applications">
+      <div class="eyebrow">Community</div>
+      <h2>Applications</h2>
+      <p class="lede">Staff applications without leaving Discord. A panel to pick from, questions answered privately, and Accept / Deny buttons for your team.</p>
+      <h3>How it runs</h3>
+      <p>A member picks an application from the panel (or runs <code>/apply</code>) and answers privately — typed questions arrive as forms, up to five at a time, multiple-choice ones as dropdowns. They review everything before submitting. The submission posts to your review channel with buttons; whoever decides can attach a note, and the applicant gets a DM either way.</p>
+      <div class="note"><b>Roles stay in your hands.</b> Accepting doesn't grant anything — Gemma reminds the reviewer to assign roles themselves. Deliberate: promotions shouldn't happen because someone fat-fingered a button.</div>
+      <h4>Building one</h4>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/application create <span class="arg">name</span> <span class="opt">[template] [description] [review_channel] [log_channel]</span></td><td>Make one. <code>template:moderator</code> starts you off with a standard nine-question mod application; <code>blank</code> starts empty.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application question add <span class="arg">application type prompt</span> <span class="opt">[choices] [required] [placeholder] [max_length]</span></td><td><code>type:text</code> for a typed answer, <code>type:choice</code> for a dropdown — separate choices with <code>|</code>, e.g. <code>Yes | No | Maybe</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application question edit · remove · move · list</td><td>Change a question, drop one, reorder, or list them with their numbers.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application set <span class="arg">application</span> <span class="opt">[description] [emoji] [review_channel] [log_channel] [reviewer_role] [ping_role] [required_role] [blacklist_role] [cooldown_hours] [dm_results] [color] [clear]</span></td><td>Everything else. <b>reviewer_role</b> lets people decide without giving them Manage Server. <b>ping_role</b> is mentioned on each submission. <b>cooldown_hours</b> makes a denied applicant wait before re-applying.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application messages <span class="arg">application</span></td><td>Edit the accepted / denied / after-submit texts.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <h4>Running it</h4>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/application panel <span class="opt">[channel] [title] [description] [color]</span></td><td>Post the picker. Panels update themselves whenever applications change.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application preview <span class="arg">application</span></td><td>Walk through it exactly as an applicant would, without submitting.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application open · close <span class="arg">application</span></td><td>Start or stop taking submissions.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application submissions <span class="arg">application</span> <span class="opt">[status] [user]</span> · view <span class="arg">submission_id</span></td><td>Browse submissions with links to the review messages, or open one by number.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application info · list · rename · delete</td><td>Settings and questions, all applications, rename, or delete (asks first).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/application export · import</td><td>Download an application as JSON, or rebuild one from a file — handy for copying between servers or keeping a backup.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>Rules Gemma enforces automatically: one pending submission per person per application, required and blacklisted roles, cooldowns, and closed applications — all checked before the questions start <i>and</i> again on submit. Answers too long for an embed get attached as a text file so nothing is lost.</p>
+    </section>
+
+    <section id="tickets">
+      <div class="eyebrow">Community</div>
+      <h2>Tickets</h2>
+      <p class="lede">A panel members press to open a private channel with your support team. Each ticket type has its own category, support role, opening message and limits.</p>
+      <div class="warn"><b>Set a category and a support role before you post the panel.</b> Without a category, ticket channels are created at the very top of your channel list; without a support role, only people with mod permissions can see them. Both live in <code>/setup</code>, or per type below.</div>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/ticket type create <span class="arg">name</span> <span class="opt">[description] [emoji] [category] [support_role] [log_channel]</span></td><td>Create a type — Support, Report a user, Appeal. Anything omitted falls back to your <code>/setup</code> defaults.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/ticket type set <span class="arg">type</span> <span class="opt">[description] [emoji] [category] [support_role] [log_channel] [open_message] [name_format] [max_open] [enabled] [color] [rename] [clear]</span></td><td><b>open_message</b> is the first message inside the ticket (variables work). <b>name_format</b> shapes the channel name — <code>{number}</code>, <code>{user}</code>. <b>max_open</b> caps how many one member can have. <b>enabled:False</b> closes the type without deleting it.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/ticket type list · delete</td><td>Every type with its resolved category, support role and open count — or remove one.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/ticket panel <span class="opt">[channel] [title] [description] [color]</span></td><td>Post the panel. One type gives a single button, several give a dropdown. It refreshes itself when types change.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/ticket list <span class="opt">[status] [user]</span></td><td>Every ticket, open or closed, and who claimed it.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <h4>Inside a ticket</h4>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/ticket open <span class="opt">[type]</span></td><td>Open one without the panel.</td><td><span class="who any">Anyone</span></td></tr>
+        <tr data-cmd><td>/ticket close <span class="opt">[reason]</span> · <b>Close</b> button</td><td>Saves a transcript to the log channel, DMs the opener, deletes the channel ten seconds later.</td><td><span class="who any">Opener or support</span></td></tr>
+        <tr data-cmd><td>/ticket claim · unclaim · <b>Claim</b> button</td><td>Signal you're handling it so two people don't reply at once.</td><td><span class="who staff">Support</span></td></tr>
+        <tr data-cmd><td>/ticket add <span class="arg">user</span> · remove <span class="arg">user</span></td><td>Bring someone in or take them out. The opener can't be removed — close it instead.</td><td><span class="who staff">Support</span></td></tr>
+        <tr data-cmd><td>/ticket rename <span class="arg">name</span></td><td>Rename the channel. Discord allows two renames per ten minutes.</td><td><span class="who staff">Support</span></td></tr>
+        <tr data-cmd><td>/ticket transcript</td><td>Pull a transcript without closing anything.</td><td><span class="who staff">Support</span></td></tr>
+      </tbody></table>
+      <p>"Support" means the type's support role, or anyone with moderator-level permissions. Transcripts cover every message, embed titles and links to attached files. If someone deletes a ticket channel by hand, Gemma marks the ticket closed rather than leaving it dangling.</p>
+    </section>
+
+    <section id="reactionroles">
+      <div class="eyebrow">Community</div>
+      <h2>Reaction roles</h2>
+      <p class="lede">Two pieces. A <b>menu</b> is the message people react to. A <b>group</b> is optional, and holds the rules for a set of roles. You only need a group for things like "pick a single colour".</p>
+      <h4>1. Groups (optional)</h4>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/rolegroup create <span class="arg">name</span> <span class="opt">[mode] [require_role] [ignore_role] [single_required]</span></td><td><b>mode:single</b> = picking one role drops the others in the group. <b>require_role</b> gates the whole group; <b>ignore_role</b> blocks it. <b>single_required</b> means a choice can't be undone.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolegroup set <span class="arg">group</span> <span class="opt">[mode] [require_role] [ignore_role] [single_required] [rename] [clear]</span></td><td>Change the rules later — menus using the group follow immediately.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolegroup list · view · delete</td><td>All groups, one group's rules and menus, or delete it (menus keep working, minus the rules).</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <h4>2. Menus</h4>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/rolemenu create <span class="opt">[channel] [title] [description] [group] [color] [instant]</span></td><td>Posts an embed Gemma keeps updated as you add roles. <b>instant</b> removes the reaction immediately and makes a second react toggle the role off.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolemenu add <span class="arg">menu emoji role</span> <span class="opt">[label]</span></td><td>The one you'll use most. She adds the reaction and rewrites the list herself. Up to 20 roles per menu (Discord's reaction cap).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolemenu remove <span class="arg">menu emoji</span></td><td>Drop a pair. Members who already have the role keep it.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolemenu attach <span class="arg">message_id channel</span> <span class="opt">[group] [instant]</span></td><td>Use a message you wrote yourself — she adds reactions and never touches your text.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolemenu mode <span class="arg">menu</span> <span class="opt">[group] [instant] [clear_group]</span></td><td>Change a live menu's group or toggle style.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolemenu list · view <span class="arg">menu</span></td><td>All menus with jump links, or one menu's pairs — flagging any role she can't actually assign.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolemenu resync <span class="arg">menu</span></td><td>Re-add reactions someone cleared and refresh the text. First thing to try if a menu looks off.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/rolemenu delete <span class="arg">menu</span> <span class="opt">[delete_message]</span></td><td>Stop it giving roles, optionally deleting the message. Nobody loses roles they already have.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <div class="warn"><b>Her role must sit above every role a menu hands out.</b> <code>/rolemenu view</code> flags anything out of reach. When she can't assign a role she takes the reaction back and explains why in your log channel rather than failing silently.</div>
+      <p>Members who aren't allowed to use a menu get their reaction removed and a one-line DM explaining why. Reactions are rate-limited to one action per person per menu every 1.5 seconds.</p>
+    </section>
+
+    <section id="autoresponder">
+      <div class="eyebrow">Everyday</div>
+      <h2>Autoresponders</h2>
+      <p class="lede">Trigger phrase in, canned answer out. Up to 100 per server, with embeds if you want them.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/autoresponder add <span class="arg">trigger response</span> <span class="opt">[strict] [reply] [delete_trigger]</span></td><td><b>strict</b> = the whole message must equal the trigger; otherwise the trigger just has to appear somewhere. <b>reply</b> replies inline; <b>delete_trigger</b> removes the original message.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/autoresponder edit <span class="arg">trigger</span></td><td>Rewrite the response in a multi-line form. Paste JSON like <code>{"embed": {"title": "Rules", "color": "#ff5c8a"}}</code> to answer with an embed.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/autoresponder update <span class="arg">trigger</span> <span class="opt">[strict] [reply] [delete_trigger]</span></td><td>Change the flags without touching the text.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/autoresponder list · view <span class="arg">trigger</span> · remove</td><td>Browse them all, inspect one with a rendered preview, or delete it.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/autoresponder ignore channel|role add|remove · ignore list</td><td>Channels and roles that never set anything off.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/autoresponder toggle <span class="arg">enabled</span> · reset · variables</td><td>Pause all of them, wipe all of them (asks first), or list the variables.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>If several could match, strict ones win and then longer triggers win — one response per message, ever. Bots and webhooks never trigger anything, and each trigger has a three-second per-channel cooldown so it can't be spammed into a wall of text.</p>
+    </section>
+
+    <section id="skullboard">
+      <div class="eyebrow">Community</div>
+      <h2>Skullboard ☠️</h2>
+      <p class="lede">A starboard with a different emoji. Enough ☠️ and the message is reposted with a jump link and a live count.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/skullboard channel <span class="arg">channel</span></td><td>Where board posts go (turns it on).</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/skullboard threshold <span class="arg">amount</span></td><td>How many reactions it takes. Default 5.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/skullboard emoji <span class="arg">emoji</span></td><td>Count something else — custom server emojis work fine.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/skullboard selfvote <span class="arg">allowed</span> · bots <span class="arg">allowed</span></td><td>Whether someone's own reaction counts on their own message, and whether bot messages can reach the board.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/skullboard ignore add|remove <span class="arg">channel</span> · ignore list</td><td>Channels whose messages never make the board.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/skullboard view · top · toggle · reset</td><td>Settings, the leaderboard, on/off, or forget every recorded post (messages stay put).</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <p>Built-in sanity: bot reactions never count, the board channel ignores itself, messages from age-restricted channels never land in a non-age-restricted board, and deleting a board post by hand lets that message qualify again.</p>
+    </section>
+
+    <section id="autorole">
+      <div class="eyebrow">Everyday</div>
+      <h2>Autorole</h2>
+      <p class="lede">One role, applied the moment someone joins. Deliberately strict about when it fires, for reasons that become obvious the first time a bot backfills 400 members.</p>
+      <div class="grid two" style="margin:16px 0">
+        <div class="card"><h4>Only on joins she sees</h4><p>If she was offline when someone joined, nothing is applied retroactively. No member sweeps on startup, ever.</p></div>
+        <div class="card"><h4>Never re-added</h4><p>Once a mod removes the role, it stays removed. Only a fresh join triggers it again.</p></div>
+        <div class="card"><h4>Screening-aware</h4><p>With Membership Screening on, the role lands right after that member finishes the rules gate.</p></div>
+        <div class="card"><h4>Loud about problems</h4><p>Deleted role, or one she can't reach? It goes in your log channel instead of failing quietly.</p></div>
+      </div>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/autorole set <span class="arg">role</span> <span class="opt">[include_bots]</span></td><td>Choose the role. Bots are skipped unless you say otherwise.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/autorole view · disable</td><td>Current setting with a warning if she can't assign it, or turn it off.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+    </section>
+
+    <section id="honeypot">
+      <div class="eyebrow">Protection</div>
+      <h2>Honeypot</h2>
+      <p class="lede">A clearly-labelled channel real members never post in. Spam bots post everywhere — the moment they touch it, they're removed and you get a log entry.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/honeypot create <span class="opt">[name]</span></td><td>Creates the channel, posts and pins a warning notice, arms it.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/honeypot channel <span class="arg">channel</span> <span class="opt">[post_warning]</span></td><td>Use a channel you already have instead.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/honeypot action <span class="arg">action</span> <span class="opt">[timeout_minutes]</span></td><td><b>ban</b> (default, also clears their last 2 days of messages), <b>kick</b>, <b>timeout</b>, or <b>delete</b> the message only.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/honeypot exempt add|remove <span class="arg">role</span></td><td>Roles it will never act on.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/honeypot view · disable</td><td>Show the settings, or disarm without deleting the channel.</td><td><span class="who mgr">Manage Server</span></td></tr>
+      </tbody></table>
+      <div class="warn"><b>Always safe:</b> the server owner, admins, anyone with moderator-level permissions, exempt roles, and other bots. Role hierarchy is checked before acting, and anything she couldn't do is reported in your log channel.</div>
+      <p>Put the channel somewhere a curious member won't wander into — bottom of the list is ideal — and leave the pinned warning in place.</p>
+    </section>
+
+    <section id="bump">
+      <div class="eyebrow">Everyday</div>
+      <h2>Bump reminders</h2>
+      <p class="lede">Watches for Disboard's "Bump done" message, thanks whoever bumped, and posts a reminder two hours later when you can bump again — surviving restarts.</p>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/bump channel <span class="arg">channel</span></td><td>Where reminders go (defaults to wherever the bump happened). Also a step in <code>/setup</code>.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/bump role <span class="opt">[role]</span> · message <span class="arg">text</span></td><td>Role to ping (empty = none) · custom text, with <code>{role}</code> where the ping goes.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/bump toggle <span class="arg">on|off</span> · view</td><td>Pause/resume · the config and next bump time.</td><td><span class="who mgr">Manage Server</span></td></tr>
+        <tr data-cmd><td>/bump next</td><td>When can we bump again?</td><td><span class="who any">Anyone</span></td></tr>
+      </tbody></table>
+    </section>
+
+    <section id="variables">
+      <div class="eyebrow">Reference</div>
+      <h2>Variables</h2>
+      <p class="lede">Usable in welcome messages, autoresponses, application messages and ticket opening messages — in text, titles, descriptions, footers, author lines and image URLs.</p>
+      <dl>
+        <dt>{user}</dt><dd>mentions the member</dd>
+        <dt>{user.name}</dt><dd>display name, no ping</dd>
+        <dt>{user.username}</dt><dd>username</dd>
+        <dt>{user.tag}</dt><dd>full tag</dd>
+        <dt>{user.id}</dt><dd>their ID</dd>
+        <dt>{user.avatar}</dt><dd>avatar URL — ideal for the embed thumbnail</dd>
+        <dt>{user.created}</dt><dd>account age, e.g. "3 years ago"</dd>
+        <dt>{user.joined}</dt><dd>when they joined</dd>
+        <dt>{guild.name} / {server}</dt><dd>server name</dd>
+        <dt>{guild.icon}</dt><dd>server icon URL</dd>
+        <dt>{guild.count}</dt><dd>member count (114)</dd>
+        <dt>{guild.count.ordinal}</dt><dd>member count with suffix (114th)</dd>
+        <dt>{guild.owner}</dt><dd>mentions the owner</dd>
+        <dt>{guild.boosts}</dt><dd>boost count</dd>
+        <dt>{channel}</dt><dd>mentions the current channel</dd>
+        <dt>{app} · {reason}</dt><dd>application name · staff note (application messages)</dd>
+        <dt>{type} · {number}</dt><dd>ticket type · ticket number (ticket opening messages)</dd>
+        <dt>\n</dt><dd>line break</dd>
+      </dl>
+    </section>
+
+    <section id="permissions">
+      <div class="eyebrow">Reference</div>
+      <h2>Who can do what</h2>
+      <div class="grid two">
+        <div class="card"><h4>Manage Server</h4><p>Every configuration command on this page. A moderator with only kick/ban won't have them — grant Manage Server if you want your mods configuring the bot.</p></div>
+        <div class="card"><h4>Anti-nuke: owner only</h4><p>Anti-nuke settings can only be changed by the server owner and users on the anti-nuke admin list — never by Manage Server or Administrator alone. That's what makes it useful against a compromised admin.</p></div>
+        <div class="card"><h4>Moderation commands</h4><p>Follow Discord's own permissions — Ban Members for ban/unban, Kick Members for kick, Timeout Members for timeout/warn/cases, Manage Messages for purge. If a mod can do it by hand, they can do it through Gemma.</p></div>
+        <div class="card"><h4>Reviewer &amp; support roles</h4><p>Per-application reviewer roles and per-type ticket support roles let staff do the day-to-day work without Manage Server over everything.</p></div>
+        <div class="card"><h4>Everyone</h4><p><code>/apply</code>, <code>/ticket open</code>, <code>/ticket close</code> in their own ticket, and the status commands.</p></div>
+        <div class="card"><h4>Fine-tuning</h4><p><b>Server Settings → Integrations → Gemma</b> lets you restrict any individual command to specific roles or channels, on top of everything above.</p></div>
+      </div>
+      <p style="margin-top:14px">Checks run on the bot's side, not just in the Discord UI — someone can't get around a restriction by guessing a command name.</p>
+    </section>
+
+    <section id="status">
+      <div class="eyebrow">Reference</div>
+      <h2>Status commands</h2>
+      <table><thead><tr><th>Command</th><th>What it does</th><th>Who</th></tr></thead><tbody>
+        <tr data-cmd><td>/ping</td><td>Latency and which shard your server is on.</td><td><span class="who any">Anyone</span></td></tr>
+        <tr data-cmd><td>/status</td><td>Health, uptime, servers, version and which features are running.</td><td><span class="who any">Anyone</span></td></tr>
+        <tr data-cmd><td>/about</td><td>What she is, plus a link to these docs.</td><td><span class="who any">Anyone</span></td></tr>
+      </tbody></table>
+      <p>Her Discord status doubles as a health light: normally online and rotating through a few messages, and if something goes wrong she switches to idle and says <b>Error! check logs!</b> until whoever runs the bot has looked at it. Some features may still work fine while she's in that state.</p>
+    </section>
+
+    <section id="trouble">
+      <div class="eyebrow">Reference</div>
+      <h2>Troubleshooting</h2>
+      <dl class="faq">
+        <dt>Commands don't appear when I type /</dt>
+        <dd>Press <kbd>Ctrl</kbd>+<kbd>R</kbd> in Discord — new commands are cached by the client. Also check the invite included the commands scope, and look in Server Settings → Integrations for an override hiding them.</dd>
+
+        <dt>A reaction role does nothing</dt>
+        <dd>Her role has to be above the role being handed out, and she needs Manage Roles. Run <code>/rolemenu view</code> — it flags exactly which roles are out of reach — then <code>/rolemenu resync</code> to restore missing reactions.</dd>
+
+        <dt>Ticket channel wasn't created</dt>
+        <dd>She needs Manage Channels, plus permission to create channels inside the chosen category. <code>/ticket type list</code> shows what each type actually resolves to, including inherited defaults.</dd>
+
+        <dt>Welcome messages or autorole aren't firing</dt>
+        <dd>Check the channel or role is set (<code>/setup</code>), and that she can post there. For autorole, remember it only ever applies to joins she witnesses — nothing is backfilled.</dd>
+
+        <dt>The autoresponder ignores everything</dt>
+        <dd>The channel or the member's role is on the ignore list, or the feature is toggled off. <code>/autoresponder ignore list</code> and <code>/autoresponder view</code> will show which.</dd>
+
+        <dt>Applications aren't posting anywhere</dt>
+        <dd>Set a review channel with <code>/application set</code> or <code>/setup</code> — she refuses to take a submission she has nowhere to deliver, rather than losing someone's answers.</dd>
+
+        <dt>A button says "This interaction failed"</dt>
+        <dd>Usually a restart mid-click. Press it again. If it persists, check <code>/status</code> to see whether that feature is running.</dd>
+
+        <dt>,G ban does nothing</dt>
+        <dd>Check the prefix with <code>/prefix view</code>, and that the mod has the matching Discord permission. If Gemma also didn't react to <code>,G commands</code>, the Message Content intent isn't enabled for the bot.</dd>
+
+        <dt>Proof didn't get saved</dt>
+        <dd>The mod log channel isn't set, or Gemma can't attach files there. <code>/mod view</code> shows the log channel; the case reply says "no mod log channel set" when that's the problem.</dd>
+
+        <dt>A network ban didn't reach my other server</dt>
+        <dd>Check <code>/network info</code> in both: the receiving side needs direction <code>receive</code> or <code>both</code>, Gemma needs Ban Members there, and only <i>manual</i> bans sync — honeypot and anti-raid bans deliberately don't.</dd>
+
+        <dt>Someone on the global list is still in my server</dt>
+        <dd>Watch-joins only covers people arriving <i>after</i> you enrolled. Run <code>/gban sweep</code> for those already here — and check <code>/gban ignore list</code> in case they're overridden.</dd>
+
+        <dt>Logs say "unknown" for who did it</dt>
+        <dd>Gemma doesn't have <b>View Audit Log</b>. Give her the permission and the actor fills in for everything after that.</dd>
+
+        <dt>Anti-nuke / anti-raid / anti-spam did nothing</dt>
+        <dd>Check they're actually enabled — the <code>/setup</code> overview shows ⚠️ next to anything that's off. Also: staff and configured staff roles are exempt on purpose, and the whitelist exempts users from anti-nuke.</dd>
+
+        <dt>Jailed member can still see channels</dt>
+        <dd>A channel was made after the jail with synced permissions off, or someone edited its overwrites. Run <code>/jail setup</code> again — it repairs every channel — and check the Jail step in <code>/setup</code>, which lists leaks.</dd>
+
+        <dt>Join-to-Create doesn't make a channel</dt>
+        <dd>Gemma needs Manage Channels and Move Members, including inside the Voice Channels category. The Voice step in <code>/setup</code> checks both.</dd>
+
+        <dt>Honeypot didn't remove someone</dt>
+        <dd>They're staff or exempt, their role sits above hers, or she lacks Ban Members. Your log channel will say which.</dd>
+      </dl>
+    </section>
+
+    <section id="legal">
+      <div class="eyebrow">Reference</div>
+      <h2>Terms &amp; privacy — your side of it</h2>
+      <p class="lede">Adding a bot makes you responsible for what it does in your community. Nothing here is onerous, but it's worth five minutes.</p>
+      <div class="grid two">
+        <div class="card"><h4>Tell your members</h4><p>Applications and ticket transcripts are stored. A line in your rules channel saying a bot processes messages and keeps what you submit covers most of what people would want to know.</p></div>
+        <div class="card"><h4>Lock down the log channels</h4><p>Transcripts, application answers and moderation evidence all land in channels you choose. Staff-only, every time — that's the single biggest privacy decision you'll make here.</p></div>
+        <div class="card"><h4>Moderation decisions are yours</h4><p>Gemma performs the ban; your staff decided on it. Appeals come to you, and the case record exists so you can answer them fairly.</p></div>
+        <div class="card"><h4>Deleting on request</h4><p>You can remove applications, tickets, skullboard entries and cases with the bot's own commands. If a member asks, you don't need to escalate anywhere.</p></div>
+      </div>
+      <p style="margin-top:16px">Full text: <a href="terms.html">Terms of Service</a> · <a href="privacy.html">Privacy Policy</a>.</p>
+    </section>
+  </main>
+</div>
+
+<footer class="site">
+  <div class="in">
+    <span>Gemma</span>
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="admins.html">Server owners</a>
+    <a href="status.html">Status</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a class="sp" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add to server</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var q=document.getElementById('search');
+  if(q){q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase();
+    document.querySelectorAll('tr[data-cmd]').forEach(function(tr){tr.classList.toggle('hide',v&&tr.textContent.toLowerCase().indexOf(v)===-1);});
+    if(v){var first=document.querySelector('tr[data-cmd]:not(.hide)');if(first)first.closest('section').scrollIntoView({block:'start'});}
+  });}
+  var links=[].slice.call(document.querySelectorAll('#nav a')),secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function onScroll(){var y=window.scrollY+140,on=0;secs.forEach(function(s,k){if(s&&s.offsetTop<=y)on=k;});links.forEach(function(a,k){a.classList.toggle('on',k===on);});}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+</body>
+</html>

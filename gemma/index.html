@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemma — Discord moderation and community, in one bot</title>
+<meta name="description" content="Eighteen features that usually take five or six bots: moderation, anti-raid, anti-spam, applications, tickets, roles, voice channels — plus bans that sync across the servers you own.">
+<meta property="og:title" content="Gemma — Discord bot">
+<meta property="og:description" content="Moderation, anti-raid, applications, tickets, roles, voice channels, and cross-server ban sharing.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#080f1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gemma.css">
+<style>
+/* landing-only */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:44px;align-items:center;padding:62px 0 44px}
+.hero h1{font-size:clamp(2.4rem,5.2vw,4rem);font-variation-settings:"SOFT" 40,"WONK" 1,"opsz" 120;line-height:1.05}
+.hero h1 em{font-style:normal;color:var(--coral)}
+#network h2 em{font-style:normal;color:var(--coral)}
+.hero p.lede{font-size:1.12rem;margin-top:20px}
+.hero .cta{display:flex;gap:11px;margin-top:26px;flex-wrap:wrap}
+.wave{display:block;width:100%;height:70px;color:var(--card)}
+.band{background:var(--deep-2);border-block:1px solid var(--line);padding:56px 0}
+
+/* cross-server spotlight */
+.spot{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:26px}
+.spot .card{padding:24px;border-color:rgba(255,92,138,.28)}
+.spot .card h3{font-size:1.2rem;margin:2px 0 8px}
+.spot .card .ico{font-size:1.6rem}
+.tag{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--coral);border:1px solid rgba(255,92,138,.4);border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.flow{font-family:var(--mono);font-size:.79rem;color:var(--foam-2);background:#060b15;border:1px solid var(--line);
+  border-radius:12px;padding:13px 15px;margin-top:15px;line-height:1.85}
+.flow b{color:var(--coral);font-weight:500}
+.groups .grid.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.groups h3.gh{font-size:1.05rem;margin:34px 0 4px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.groups h3.gh span{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--foam-3);font-weight:400}
+
+/* presence card */
+.presence{background:linear-gradient(180deg,var(--card-2),var(--card));border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 40px 70px -38px rgba(0,0,0,.9)}
+.presence .row{display:flex;gap:14px;align-items:center}
+.avatar{position:relative;width:66px;height:66px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:conic-gradient(from 210deg,var(--coral),var(--sand) 45%,var(--lagoon) 80%,var(--coral));
+  font:700 1.8rem var(--display);color:#08101d}
+.avatar img{border-radius:50%}
+.dot{position:absolute;z-index:2;right:-2px;bottom:-2px;width:20px;height:20px;border-radius:50%;background:#43b581;border:4px solid var(--card-2)}
+.pname{font:600 1.28rem var(--display)}
+.pname .bt{font:500 .6rem var(--body);background:#5865f2;color:#fff;padding:2px 6px;border-radius:5px;vertical-align:middle;margin-left:7px}
+.ptext{color:var(--foam-2);font-size:.96rem;min-height:1.5em;transition:opacity .25s}
+.ptext.fade{opacity:0}
+.presence .foot{margin-top:15px;border-top:1px dashed var(--line);padding-top:11px;font-family:var(--mono);font-size:.73rem;color:var(--foam-3)}
+@media (max-width:900px){.hero{grid-template-columns:1fr;padding:34px 0 24px}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="index.html"><span class="mark">G<img src="pfp.jpg" alt="" onerror="this.remove()"></span>Gemma</a>
+    <nav>
+      <a href="#network">Cross-server</a>
+      <a href="#features">Features</a>
+      <a href="members.html">For members</a>
+      <a href="admins.html">For server owners</a>
+      <a href="status.html">Status</a>
+      <a class="btn primary" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add to server</a>
+    </nav>
+  </div>
+</header>
+
+<div class="shell">
+  <section class="hero" style="border:0">
+    <div>
+      <div class="eyebrow">Discord bot · v0.7.0</div>
+      <!-- Tagline. Swap for one of these if you prefer:
+             "Stop stacking bots."
+             "One bot. Fewer bots."
+             "Six bots' worth. One invite."
+             "Banned here. Banned everywhere."   (leads with cross-server instead) -->
+      <h1>Your <em>last</em><br>bot invite.</h1>
+      <p class="lede">Moderation, anti-raid, anti-spam, applications, tickets, roles, voice channels, logging. Eighteen features that usually take five or six separate bots, in one, set up entirely from Discord. Plus something most of them don't do at all: bans that follow an account across every server you run.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add Gemma to your server</a>
+        <a class="btn ghost" href="admins.html">Read the setup guide</a>
+      </div>
+      <div class="chips" style="margin-top:22px">
+        <span class="chip coral">Ban network</span><span class="chip coral">Global ban list</span>
+        <span class="chip">Anti-nuke</span><span class="chip">Anti-raid</span><span class="chip">Anti-spam</span>
+        <span class="chip">Moderation</span><span class="chip">Jail</span><span class="chip">Logging</span>
+        <span class="chip">Applications</span><span class="chip">Tickets</span><span class="chip">Reaction roles</span>
+        <span class="chip lagoon">☠️ Skullboard</span><span class="chip">+6 more</span>
+      </div>
+    </div>
+
+    <div class="presence" id="presence" aria-live="polite">
+      <div class="row">
+        <div class="avatar">G<img src="pfp.jpg" alt="Gemma's avatar" onerror="this.remove()"><span class="dot" id="pdot"></span></div>
+        <div>
+          <div class="pname">Gemma<span class="bt">BOT</span></div>
+          <div class="ptext" id="ptext">Online • Shard 0/1</div>
+        </div>
+      </div>
+      <div class="foot" id="plog">Her status doubles as a health light. When something needs attention she goes idle and says so, rather than failing quietly. <a href="status.html">Live status →</a></div>
+    </div>
+  </section>
+</div>
+
+<svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
+  <path fill="currentColor" d="M0 34c120-26 240-26 360 0s240 26 360 0 240-26 360 0 240 26 360 0v36H0z"></path>
+</svg>
+
+<div class="band">
+  <div class="shell">
+    <section id="network" style="border:0;padding:0">
+      <div class="eyebrow">What sets her apart</div>
+      <h2>Banned here. <em>Banned everywhere.</em></h2>
+      <p class="lede">Most bots stop at your server's edge: ban an account and it just joins the next server on its list. Gemma has two ways to close that gap. Both are opt-in, and both can be undone.</p>
+
+      <div class="spot">
+        <div class="card feat">
+          <span class="ico">🌐</span><br>
+          <span class="tag">Ban network</span>
+          <h3>Ban once, across every server you run</h3>
+          <p>Link the servers you own with a private code. A ban by your mods in one lands in all of them, and lifting it travels too. Only manual bans sync, so a honeypot false positive in one server never becomes everyone's problem.</p>
+          <div class="flow">
+            <b>,G ban</b> @spammer scam links<br>
+            → banned in Server A, Server B, and Server C<br>
+            → one DM to them, naming the servers<br>
+            → reason carries: <b>"Network ban from Server A"</b>
+          </div>
+          <p style="margin-top:13px;font-size:.93rem">Gemma verifies you own every server you link. A leaked code can't attach your community to someone else's ban button.</p>
+        </div>
+
+        <div class="card feat">
+          <span class="ico">🛰️</span><br>
+          <span class="tag">Global ban list</span>
+          <h3>The bots that hit every server, stopped at yours</h3>
+          <p>A curated list of accounts confirmed to be automated, or to friend-add members in order to solicit them. Servers opt in. A listed account that joins is DMed the reason and an appeal link, then removed before it can message anyone.</p>
+          <div class="flow">
+            listed account joins →<br>
+            → DM: <b>reason + appeal link</b><br>
+            → banned, logged, done<br>
+            disagree? <b>/gban ignore</b> keeps them, no questions asked
+          </div>
+          <p style="margin-top:13px;font-size:.93rem">Every entry carries evidence and a reason anyone can read with <code>/gban lookup</code>. Leave the list whenever you like. Your own staff are never touched by it.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="shell">
+  <section id="features" class="groups">
+    <div class="eyebrow">Everything else</div>
+    <h2>Eighteen features. Use the ones you need.</h2>
+    <p class="lede">Nothing here is mandatory, and nothing assumes a particular kind of server. Small community? Skip the honeypot. Not recruiting staff? Skip applications.</p>
+
+    <h3 class="gh">Protection <span>keeping the server standing</span></h3>
+    <div class="grid two">
+      <div class="card feat"><span class="ico">🔨</span><h3>Moderation</h3><p>Ban, kick, timeout, warn, purge. Use <code>/ban</code>, or type <code>,G ban @user reason</code> and drag the screenshots onto the message. Every action becomes a numbered case, and the evidence is re-uploaded to your log so the links never expire.</p></div>
+      <div class="card feat"><span class="ico">🧨</span><h3>Anti-nuke</h3><p>When an admin account gets taken over, the damage takes seconds. Gemma counts destructive actions per person and stops whoever is doing them. Only the server owner can switch it off, which is the entire point.</p></div>
+      <div class="card feat"><span class="ico">🌊</span><h3>Anti-raid</h3><p>Ten joins in ten seconds isn't organic. Raid mode handles arrivals the way you chose, throwaway accounts can be turned away on sight, and one command raises verification to maximum while you deal with it.</p></div>
+      <div class="card feat"><span class="ico">🧯</span><h3>Anti-spam</h3><p>Rapid-fire posting, the same line five times, keyboard mash like "yousuckyousuckyousuck". Messages get cleaned up, and timeouts double for repeat offenders. Typing "lmaooooo" is still allowed.</p></div>
+      <div class="card feat"><span class="ico">⛓️</span><h3>Jail</h3><p>Somewhere between a warning and a ban. Roles come off, one channel stays visible so staff can talk to them, and everything goes back exactly as it was when you let them out. Leaving and rejoining doesn't help.</p></div>
+      <div class="card feat"><span class="ico">🍯</span><h3>Honeypot</h3><p>A channel that says, loudly, do not post here. Real members read it. Spam bots post in everything.</p></div>
+      <div class="card feat"><span class="ico">📝</span><h3>Logging</h3><p>Who deleted that message, and what did it say? Eight categories covering messages, members, moderation, channels, roles, voice, invites and server changes. Each can go to its own channel, and the responsible person comes from the audit log.</p></div>
+    </div>
+
+    <h3 class="gh">Community <span>the reasons people stay</span></h3>
+    <div class="grid two">
+      <div class="card feat"><span class="ico">👋</span><h3>Welcome messages</h3><p>Your embed, your colours, your member count. Build it in a form, adjust the image and footer, or paste in JSON you designed elsewhere. Preview it privately before anyone else sees it.</p></div>
+      <div class="card feat"><span class="ico">📋</span><h3>Applications</h3><p>Staff applications that live in Discord instead of a Google Form. Members answer privately, your team gets Accept and Deny buttons with a note field, and the applicant hears back either way. Handing out the role stays your decision.</p></div>
+      <div class="card feat"><span class="ico">🎫</span><h3>Tickets</h3><p>One button opens a private channel between the member and your support role. Claim it so two people don't answer at once, pull someone else in, then close it. The transcript saves itself.</p></div>
+      <div class="card feat"><span class="ico">🎭</span><h3>Reaction roles</h3><p>React for a role. Group roles so people can only hold one at a time, gate a group behind a role they already have, or lock a choice once it's made. Gemma keeps the menu text and the reactions in sync herself.</p></div>
+      <div class="card feat"><span class="ico">🎙️</span><h3>Voice channels</h3><p>Join one channel and get your own, with a button panel to lock it, hide it, rename it, or throw someone out. When the last person leaves, it disappears.</p></div>
+      <div class="card feat"><span class="ico">☠️</span><h3>Skullboard</h3><p>A starboard with worse taste. Five ☠️ and the message is immortalised in its own channel, with a jump link and a live count.</p></div>
+    </div>
+
+    <h3 class="gh">Everyday <span>small things, constantly</span></h3>
+    <div class="grid two">
+      <div class="card feat"><span class="ico">💬</span><h3>Autoresponders</h3><p>Answer the same five questions forever, automatically. Match a word anywhere in a message or only exact phrases, reply inline, and use an embed when plain text won't do.</p></div>
+      <div class="card feat"><span class="ico">🔰</span><h3>Autorole</h3><p>One role, given the moment someone joins. If a mod takes it away it stays away, and nobody who joined while Gemma was offline gets it retroactively.</p></div>
+      <div class="card feat"><span class="ico">⌨️</span><h3>Prefix &amp; aliases</h3><p>Every mod command works as a slash command or with <code>,G</code>. Make your own shortcuts too, so <code>,G spam @user</code> can mean a ban with the reason already written.</p></div>
+      <div class="card feat"><span class="ico">⏰</span><h3>Bump reminders</h3><p>Thanks whoever bumped on Disboard, then pings when the two hours are up.</p></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="eyebrow">Getting started</div>
+    <h2>Ten minutes, start to finish</h2>
+    <ol class="steps">
+      <li><h3>Invite her</h3><p>One click. The link asks for Administrator so nothing silently half-works; if you'd rather hand-pick permissions, the <a href="admins.html">setup guide</a> lists exactly which ones each feature needs.</p></li>
+      <li><h3>Tell her who your staff are</h3><p><code>/staff add @Mods</code>. Every protective feature uses this to know who to leave alone.</p></li>
+      <li><h3>Run <code>/setup</code></h3><p>One menu covering every channel and role a feature wants. The protection features show a status line and a single button that turns them on with sensible defaults.</p></li>
+      <li><h3>Try the fun parts</h3><p><code>/welcome test</code>, <code>/ticket panel</code>, <code>/rolemenu create</code>, <code>/application create name:Moderator</code>.</p></li>
+      <li><h3>Change your mind whenever</h3><p>Every feature has its own commands and can be switched off without losing its settings.</p></li>
+    </ol>
+    <div class="cta" style="display:flex;gap:11px;flex-wrap:wrap;margin-top:26px">
+      <a class="btn primary" href="admins.html">Full setup guide</a>
+      <a class="btn ghost" href="members.html">I'm a member, not an admin</a>
+    </div>
+  </section>
+
+  <section id="honest">
+    <div class="eyebrow">Before you add her</div>
+    <h2>Things worth knowing</h2>
+    <div class="grid two">
+      <div class="card">
+        <span class="ico">🔍</span><h3>She tells you when she's broken</h3>
+        <p>If something fails, Gemma goes idle and says so instead of pretending everything is fine. One feature failing never takes the others with it, and there's a <a href="status.html">public status page</a>.</p>
+      </div>
+      <div class="card">
+        <span class="ico">🗝️</span><h3>Your data stays yours</h3>
+        <p>Server settings, applications, tickets and moderation records. No general chat archiving, no analytics, nothing sold to anyone. The <a href="privacy.html">privacy policy</a> goes feature by feature.</p>
+      </div>
+      <div class="card">
+        <span class="ico">🙋</span><h3>For members</h3>
+        <p>How to apply, how to open a ticket, why your reaction didn't give you a role, and what the global ban list is.</p>
+        <p style="margin-top:10px"><a href="members.html">Read the member guide →</a></p>
+      </div>
+      <div class="card">
+        <span class="ico">🛠️</span><h3>For server owners &amp; mods</h3>
+        <p>Every command and option, the setup order that avoids backtracking, the permission model, and what to check when something looks wrong.</p>
+        <p style="margin-top:10px"><a href="admins.html">Read the owner guide →</a></p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="site">
+  <div class="in">
+    <span>Gemma</span>
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="admins.html">Server owners</a>
+    <a href="status.html">Status</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a class="sp" href="https://discord.com/oauth2/authorize?client_id=1538720562514235563&amp;scope=bot%20applications.commands&amp;permissions=8">Add to server</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var msgs=["Online • Shard 0/1","Serving the community ;3","Status: All good!"];
+  var text=document.getElementById('ptext');
+  var i=0;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce||!text) return;
+  function show(t){text.classList.add('fade');setTimeout(function(){text.textContent=t;text.classList.remove('fade');},220);}
+  setInterval(function(){i=(i+1)%msgs.length;show(msgs[i]);},3400);
+})();
+</script>
+</body>
+</html>
